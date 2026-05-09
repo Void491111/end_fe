@@ -14,3 +14,4 @@ export interface MenuItem {
     imageUrl: string;
     isAvailable?: boolean;
 }
+

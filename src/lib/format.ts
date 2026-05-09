@@ -1,4 +1,4 @@
-export function formatCurreny(amout: number): string {
+export function formatCurrency(amout: number): string {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",

@@ -27,7 +27,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       orderType: "dine-in",
 
-      addItem: (item) =>
+      addItem: (item: MenuItem) =>
         set((state) => {
           const existing = state.items.find((i) => i.id === item.id);
           if (existing) {
@@ -37,15 +37,16 @@ export const useCartStore = create<CartState>()(
               ),
             };
           }
-          return { items: [...state.items, { ...item, quantity: 1 }] };
+          const newItem: CartItem = { ...item, quantity: 1 };
+          return { items: [...state.items, newItem] };
         }),
 
-      removeItem: (id) =>
+      removeItem: (id: string) =>
         set((state) => ({
           items: state.items.filter((i) => i.id !== id),
         })),
 
-      updateQuantity: (id, quantity) =>
+      updateQuantity: (id: string, quantity: number) =>
         set((state) => ({
           items:
             quantity <= 0
@@ -55,26 +56,37 @@ export const useCartStore = create<CartState>()(
                 ),
         })),
 
-      updateNotes: (id, notes) =>
+      updateNotes: (id: string, notes: string) =>
         set((state) => ({
           items: state.items.map((i) =>
             i.id === id ? { ...i, notes } : i
           ),
         })),
 
-      setOrderType: (type) => set({ orderType: type }),
+      setOrderType: (type: OrderType) => set({ orderType: type }),
 
       clearCart: () => set({ items: [] }),
 
-      getSubtotal: () =>
-        get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      getSubtotal: (): number => {
+        const items = get().items;
+        return items.reduce(
+          (sum: number, item: CartItem) =>
+            sum + Number(item.price) * Number(item.quantity),
+          0
+        );
+      },
 
-      getTax: () => get().getSubtotal() * TAX_RATE,
+      getTax: (): number => get().getSubtotal() * TAX_RATE,
 
-      getTotal: () => get().getSubtotal() + get().getTax(),
+      getTotal: (): number => get().getSubtotal() + get().getTax(),
 
-      getItemCount: () =>
-        get().items.reduce((sum, item) => sum + item.quantity, 0),
+      getItemCount: (): number => {
+        const items = get().items;
+        return items.reduce(
+          (sum: number, item: CartItem) => sum + Number(item.quantity),
+          0
+        );
+      },
     }),
     { name: "mooiste-cart" }
   )

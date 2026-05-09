@@ -1,2 +1,2 @@
-export const APP_NAME = "MooisteCafe";
-export const TAX_RATE = "0.1";
+export const APP_NAME: string = "Mooistecafe";
+export const TAX_RATE: number = 0.1;
