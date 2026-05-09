@@ -1,6 +1,6 @@
 import { CategorySidebar } from "@/components/pos/CategorySidebar";
 import { MenuGrid } from "@/components/pos/MenuGrid";
-import { CartPanel } from "@/components/pos/CartPanel"
+import { CartPanel } from "@/components/pos/CartPanel";
 
 export default function POSPage() {
   return (
