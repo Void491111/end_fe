@@ -18,7 +18,7 @@ export interface CompletedOrder {
     total: number;
     cashReceived: number;
     changeAmount: number;
-    paymnetMethod: PaymentMethod;
+    paymentMethod: PaymentMethod;
     orderType: OrderType;
     status: OrderStatus;
     kasirName: string;
