@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
+import { useHydration } from "@/hooks/useHy"
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CartItemRow } from "./CartItem";
 import { OrderSummary } from "./OrderSummary";
 import { OrderTypeToggle } from "./OrderTypeToggle";
-import { CheckoutModal } from "./CheckoutModal.tsx"
+import { CheckoutModal } from "./CheckoutModal.tsx";
 
 export function CartPanel() {
   const items = useCartStore((s) => s.items);
@@ -18,6 +19,11 @@ export function CartPanel() {
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleClear = () => {
     if (items.length === 0) return;
@@ -33,6 +39,10 @@ export function CartPanel() {
     setCheckoutOpen(true);
   };
 
+  // Render only after client mounts (avoid hydration mismatch)
+  const displayItems = mounted ? items : [];
+  const displayCount = mounted ? itemCount : 0;
+
   return (
     <>
       <aside className="flex w-[380px] flex-col border-l border-border bg-card">
@@ -40,13 +50,13 @@ export function CartPanel() {
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
             <h2 className="font-semibold">Order Details</h2>
-            {itemCount > 0 && (
+            {displayCount > 0 && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                {itemCount}
+                {displayCount}
               </span>
             )}
           </div>
-          {items.length > 0 && (
+          {displayItems.length > 0 && (
             <Button
               variant="ghost"
               size="sm"
@@ -64,12 +74,12 @@ export function CartPanel() {
 
         <ScrollArea className="flex-1">
           <div className="p-4">
-            {items.length === 0 ? (
+            {displayItems.length === 0 ? (
               <EmptyCart />
             ) : (
               <div className="space-y-2">
                 <AnimatePresence mode="popLayout">
-                  {items.map((item) => (
+                  {displayItems.map((item) => (
                     <CartItemRow key={item.id} item={item} />
                   ))}
                 </AnimatePresence>
@@ -84,9 +94,9 @@ export function CartPanel() {
             size="lg"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             onClick={handleCheckout}
-            disabled={items.length === 0}
+            disabled={displayItems.length === 0}
           >
-            Checkout · {itemCount} {itemCount === 1 ? "item" : "items"}
+            Checkout · {displayCount} {displayCount === 1 ? "item" : "items"}
           </Button>
         </div>
       </aside>
