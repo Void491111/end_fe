@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
-import { useHydration } from "@/hooks/useHy"
+import { useHydration } from "@/hooks/useHydration";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CartItemRow } from "./CartItem";
@@ -14,16 +14,13 @@ import { OrderTypeToggle } from "./OrderTypeToggle";
 import { CheckoutModal } from "./CheckoutModal.tsx";
 
 export function CartPanel() {
+  const hydrated = useHydration();
+
   const items = useCartStore((s) => s.items);
   const itemCount = useCartStore((s) => s.getItemCount());
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleClear = () => {
     if (items.length === 0) return;
@@ -39,9 +36,9 @@ export function CartPanel() {
     setCheckoutOpen(true);
   };
 
-  // Render only after client mounts (avoid hydration mismatch)
-  const displayItems = mounted ? items : [];
-  const displayCount = mounted ? itemCount : 0;
+  // Render only after hydration to avoid SSR mismatch
+  const displayItems = hydrated ? items : [];
+  const displayCount = hydrated ? itemCount : 0;
 
   return (
     <>
