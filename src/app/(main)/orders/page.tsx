@@ -18,7 +18,14 @@ import { CompletedOrder } from "@/types/order";
 import { toast } from "sonner";
 
 export default function OrdersPage() {
-  const todayOrders = useOrderStore((s) => s.getTodayOrders());
+  const allOrders = useOrderStore((s) => s.orders);
+
+  const todayOrders = useMemo(() => {
+    const today = new Date().toDateString();
+    return allOrders.filter(
+      (o) => new Date(o.createdAt).toDateString() === today
+    );
+  }, [allOrders]);
 
   const [selectedOrder, setSelectedOrder] = useState<CompletedOrder | null>(
     null
@@ -53,7 +60,6 @@ export default function OrdersPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Page Header */}
       <div className="border-b border-border bg-card px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -69,13 +75,10 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      {/* Content */}
       <ScrollArea className="flex-1">
         <div className="p-6 space-y-4 max-w-5xl mx-auto">
-          {/* Stats */}
           <OrderStats />
 
-          {/* Filters & Search */}
           <div className="space-y-3">
             <OrderFilters
               active={filter}
@@ -90,7 +93,6 @@ export default function OrdersPage() {
             />
           </div>
 
-          {/* Order List */}
           {filteredOrders.length === 0 ? (
             <EmptyState hasOrders={todayOrders.length > 0} />
           ) : (
@@ -111,7 +113,6 @@ export default function OrdersPage() {
         </div>
       </ScrollArea>
 
-      {/* Detail Modal */}
       <OrderDetailModal
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}

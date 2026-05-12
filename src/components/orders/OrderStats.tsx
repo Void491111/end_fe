@@ -1,14 +1,30 @@
 "use client";
 
+import { useMemo } from "react";
 import { ShoppingBag, DollarSign, Clock } from "lucide-react";
 import { useOrderStore } from "@/store/useOrderStatus";
 import { formatCurrency } from "@/lib/format";
 
 export function OrderStats() {
-  const todayOrders = useOrderStore((s) => s.getTodayOrders());
+  const allOrders = useOrderStore((s) => s.orders);
 
-  const completedOrders = todayOrders.filter((o) => o.status === "Completed");
-  const totalRevenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+  const todayOrders = useMemo(() => {
+    const today = new Date().toDateString();
+    return allOrders.filter(
+      (o) => new Date(o.createdAt).toDateString() === today
+    );
+  }, [allOrders]);
+
+  const completedOrders = useMemo(
+    () => todayOrders.filter((o) => o.status === "Completed"),
+    [todayOrders]
+  );
+
+  const totalRevenue = useMemo(
+    () => completedOrders.reduce((sum, o) => sum + o.total, 0),
+    [completedOrders]
+  );
+
   const avgOrderValue =
     completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
 

@@ -9,7 +9,6 @@ interface OrderState {
   addOrder: (order: CompletedOrder) => void;
   voidOrder: (id: string) => void;
   getNextQueueNumber: () => string;
-  getTodayOrders: () => CompletedOrder[];
 }
 
 export const useOrderStore = create<OrderState>()(
@@ -35,13 +34,6 @@ export const useOrderStore = create<OrderState>()(
         set({ lastQueueNumber: next });
         const padded = String(next).padStart(3, "0");
         return `A${padded}`;
-      },
-
-      getTodayOrders: () => {
-        const today = new Date().toDateString();
-        return get().orders.filter(
-          (o) => new Date(o.createdAt).toDateString() === today
-        );
       },
     }),
     { name: "mooiste-orders" }
