@@ -98,13 +98,13 @@ function CheckoutContent({
     };
 
     addOrder(newOrder);
+    clearCart();
     setSuccessQueue(queueNumber);
     setIsProcessing(false);
     toast.success(`Order ${queueNumber} berhasil!`);
   };
 
   const handleNewOrder = () => {
-    clearCart();
     onOpenChange(false);
   };
 
