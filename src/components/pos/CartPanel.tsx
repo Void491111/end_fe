@@ -42,7 +42,7 @@ export function CartPanel() {
 
   return (
     <>
-      <aside className="flex w-[380px] flex-col border-l border-border bg-card">
+      <aside className="flex w-95 flex-col border-l border-border bg-card">
         <div className="flex items-center justify-between border-b border-border p-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
