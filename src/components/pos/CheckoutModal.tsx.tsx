@@ -93,7 +93,7 @@ function CheckoutContent({
       paymentMethod: "cash",
       orderType,
       status: "Completed",
-      kasirName: user?.name ?? "Andi Kasir",
+      kasirName: user?.name ?? "Person 1",
       createdAt: new Date().toISOString(),
     };
 

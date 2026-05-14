@@ -25,26 +25,22 @@ export function CategorySidebar() {
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={cn(
-                  "flex flex-col items-center gap-1.5 rounded-lg p-3 transition-all",
-                  "hover:bg-accent",
-                  isActive && "bg-primary/10"
-                )}
+                className="flex flex-col items-center gap-1.5 rounded-lg p-3 transition-colors hover:bg-accent/50 group"
               >
-                <div
+                <Icon
                   className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-lg transition-colors",
+                    "h-6 w-6 transition-colors",
                     isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground"
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-foreground"
                   )}
-                >
-                  <Icon className="h-5 w-5" />
-                </div>
+                />
                 <span
                   className={cn(
-                    "text-xs font-medium leading-tight text-center",
-                    isActive ? "text-primary" : "text-muted-foreground"
+                    "text-xs font-medium leading-tight text-center transition-colors",
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-foreground"
                   )}
                 >
                   {category.name}

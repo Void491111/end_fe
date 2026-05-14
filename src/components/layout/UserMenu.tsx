@@ -24,7 +24,7 @@ export function UserMenu() {
     router.push("/login");
   };
 
-  const displayName = user?.name ?? "Andi (Kasir)";
+  const displayName = user?.name ?? "Person 1 (Kasir)";
   const initials = displayName
     .split(" ")
     .map((n) => n[0])

@@ -34,7 +34,7 @@ export function LoginForm() {
     setAuth(
       {
         id: "1",
-        name: "Andi Kasir",
+        name: "Person 1",
         email,
         role: "kasir",
       },

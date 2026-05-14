@@ -42,7 +42,7 @@ export function CartPanel() {
 
   return (
     <>
-      <aside className="flex w-95 flex-col border-l border-border bg-card">
+      <aside className="h-full flex w-95 flex-col border-l border-border bg-card">
         <div className="flex items-center justify-between border-b border-border p-4">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
@@ -69,7 +69,7 @@ export function CartPanel() {
           <OrderTypeToggle />
         </div>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="p-4">
             {displayItems.length === 0 ? (
               <EmptyCart />

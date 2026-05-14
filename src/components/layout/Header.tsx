@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, LayoutGrid, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ThemeToggle } from "@/components/shared/ThemeToggle.tsx";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { usePOSStore } from "@/store/usePOSStore";
 import { APP_NAME } from "@/lib/constants";
