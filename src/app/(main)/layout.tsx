@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/Header";
+import { PageTransition } from "@/components/shared/PageTransition";
 
 export default function MainLayout({
   children,
@@ -8,7 +9,9 @@ export default function MainLayout({
   return (
     <div className="flex h-screen flex-col bg-background">
       <Header />
-      <main className="flex flex-1 overflow-auto">{children}</main>
+      <main className="flex flex-1 overflow-auto">
+        <PageTransition>{children}</PageTransition>
+      </main>
     </div>
   );
 }

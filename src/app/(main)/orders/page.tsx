@@ -59,7 +59,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col ">
       <div className="border-b border-border bg-card px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -74,8 +74,8 @@ export default function OrdersPage() {
           </Button>
         </div>
       </div>
-
-      <ScrollArea className="flex-1">
+ 
+      <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-6 space-y-4 max-w-5xl mx-auto">
           <OrderStats />
 
