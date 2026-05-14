@@ -29,11 +29,17 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@theme inline {
+  /* ... yang udah ada ... */
+  --font-sans: var(--font-poppins);
+}
+
+
 :root {
   --radius: 0.75rem;
   
   /* Light Mode - Warm Cream Theme */
-  --background: oklch(0.99 0.005 80);
+  --background: oklch(0.96 0 0);
   --foreground: oklch(0.15 0.01 80);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 80);

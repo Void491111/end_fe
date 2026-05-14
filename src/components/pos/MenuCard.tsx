@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 import { MenuItem } from "@/types/menu";
 import { useCartStore } from "@/store/useCartStore";
 import { formatCurrency } from "@/lib/format";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
 interface MenuCardProps {
   item: MenuItem;
@@ -25,42 +23,36 @@ export function MenuCard({ item }: MenuCardProps) {
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
+      onClick={() => addItem(item)}
+      className="group cursor-pointer overflow-hidden rounded-none bg-white dark:bg-[#131519] border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
     >
-      <Card
-        onClick={() => addItem(item)}
-        className={cn(
-          "group relative cursor-pointer overflow-hidden border-border bg-card p-3 transition-all",
-          "hover:border-primary/50 hover:shadow-md"
+      {/* Image area */}
+      <div className="relative aspect-square overflow-hidden flex items-center justify-center">
+        <span className="text-5xl opacity-90">☕</span>
+
+        {quantity > 0 && (
+          <div className="absolute bottom-2 right-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">
+            {quantity}
+          </div>
         )}
-      >
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-muted mb-3">
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-accent">
-            <span className="text-3xl">☕</span>
-          </div>
 
-          {quantity > 0 && (
-            <div className="absolute bottom-2 right-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground shadow-lg">
-              {quantity}
-            </div>
-          )}
-
-          <div className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground opacity-0 transition-opacity group-hover:opacity-100">
-            <Plus className="h-4 w-4" />
-          </div>
+        <div className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-primary-foreground opacity-0 transition-opacity group-hover:opacity-100">
+          <Plus className="h-4 w-4" />
         </div>
+      </div>
 
-        <div className="space-y-1">
-          <h3 className="text-sm font-medium leading-tight line-clamp-1">
-            {item.name}
-          </h3>
-          <p className="text-xs text-muted-foreground line-clamp-1">
-            {item.description}
-          </p>
-          <p className="text-sm font-semibold text-primary pt-1">
-            {formatCurrency(item.price)}
-          </p>
-        </div>
-      </Card>
+      {/* Info — text adaptive ngikut card bg */}
+      <div className="p-3 space-y-0.5">
+        <h3 className="text-sm font-bold leading-tight line-clamp-1 text-neutral-900 dark:text-neutral-100">
+          {item.name}
+        </h3>
+        <p className="text-xs leading-tight line-clamp-1 text-neutral-500 dark:text-neutral-400">
+          {item.description}
+        </p>
+        <p className="text-sm font-bold pt-1 text-neutral-900 dark:text-neutral-100">
+          {formatCurrency(item.price)}
+        </p>
+      </div>
     </motion.div>
   );
 }
