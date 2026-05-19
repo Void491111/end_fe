@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OrderCard } from "@/components/orders/OrderCard";
 import { OrderDetailModal } from "@/components/orders/OrderDetailModal";
+import { OrderSort, SortOption, sortOrders } from "@/components/orders/OrderSort";
 import { OrderStats } from "@/components/orders/OrderStats";
 import {
   OrderFilters,
@@ -25,6 +26,7 @@ export default function OrdersPage() {
   const allOrders = useOrderStore((s) => s.orders);
 
   const [dateRange, setDateRange] = useState<DateRange>("today");
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [selectedOrder, setSelectedOrder] = useState<CompletedOrder | null>(
     null
   );
@@ -48,7 +50,7 @@ export default function OrdersPage() {
   );
 
   const filteredOrders = useMemo(() => {
-    return rangedOrders
+    const filtered = rangedOrders
       .filter((o) => {
         if (filter === "all") return true;
         return o.status === filter;
@@ -57,7 +59,8 @@ export default function OrdersPage() {
         if (!search) return true;
         return o.queueNumber.toLowerCase().includes(search.toLowerCase());
       });
-  }, [rangedOrders, filter, search]);
+    return sortOrders(filtered, sortBy);
+  }, [rangedOrders, filter, search, sortBy]);
 
   const handleRefresh = () => {
     toast.success("Order list refreshed");
@@ -93,8 +96,11 @@ export default function OrdersPage() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="p-6 space-y-4 max-w-5xl mx-auto">
-          {/* Date Range Selector */}
-          <DateRangeSelector value={dateRange} onChange={setDateRange} />
+          {/* Date Range + Sort */}
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <DateRangeSelector value={dateRange} onChange={setDateRange} />
+            <OrderSort value={sortBy} onChange={setSortBy} />
+          </div>
 
           {/* Stats — pass rangedOrders */}
           <OrderStats orders={rangedOrders} />
