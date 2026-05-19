@@ -5,7 +5,6 @@ import { RefreshCw, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { OrderCard } from "@/components/orders/OrderCard";
 import { OrderDetailModal } from "@/components/orders/OrderDetailModal";
 import { OrderStats } from "@/components/orders/OrderStats";
@@ -13,6 +12,11 @@ import {
   OrderFilters,
   OrderFilter,
 } from "@/components/orders/OrderFilters";
+import {
+  DateRangeSelector,
+  DateRange,
+  isInRange,
+} from "@/components/orders/DateRangeSelector";
 import { useOrderStore } from "@/store/useOrderStatus";
 import { CompletedOrder } from "@/types/order";
 import { toast } from "sonner";
@@ -20,30 +24,31 @@ import { toast } from "sonner";
 export default function OrdersPage() {
   const allOrders = useOrderStore((s) => s.orders);
 
-  const todayOrders = useMemo(() => {
-    const today = new Date().toDateString();
-    return allOrders.filter(
-      (o) => new Date(o.createdAt).toDateString() === today
-    );
-  }, [allOrders]);
-
+  const [dateRange, setDateRange] = useState<DateRange>("today");
   const [selectedOrder, setSelectedOrder] = useState<CompletedOrder | null>(
     null
   );
   const [filter, setFilter] = useState<OrderFilter>("all");
   const [search, setSearch] = useState("");
 
+  // Filter berdasarkan date range
+  const rangedOrders = useMemo(() => {
+    return allOrders.filter((o) =>
+      isInRange(new Date(o.createdAt), dateRange)
+    );
+  }, [allOrders, dateRange]);
+
   const counts = useMemo(
     () => ({
-      all: todayOrders.length,
-      completed: todayOrders.filter((o) => o.status === "completed").length,
-      voided: todayOrders.filter((o) => o.status === "voided").length,
+      all: rangedOrders.length,
+      completed: rangedOrders.filter((o) => o.status === "completed").length,
+      voided: rangedOrders.filter((o) => o.status === "voided").length,
     }),
-    [todayOrders]
+    [rangedOrders]
   );
 
   const filteredOrders = useMemo(() => {
-    return todayOrders
+    return rangedOrders
       .filter((o) => {
         if (filter === "all") return true;
         return o.status === filter;
@@ -52,21 +57,32 @@ export default function OrdersPage() {
         if (!search) return true;
         return o.queueNumber.toLowerCase().includes(search.toLowerCase());
       });
-  }, [todayOrders, filter, search]);
+  }, [rangedOrders, filter, search]);
 
   const handleRefresh = () => {
     toast.success("Order list refreshed");
   };
 
+  const getRangeLabel = () => {
+    switch (dateRange) {
+      case "today":
+        return "Riwayat pesanan hari ini";
+      case "7days":
+        return "Riwayat pesanan 7 hari terakhir";
+      case "30days":
+        return "Riwayat pesanan 30 hari terakhir";
+      case "90days":
+        return "Riwayat pesanan 90 hari terakhir";
+    }
+  };
+
   return (
-    <div className="flex flex-1 flex-col ">
+    <div className="flex flex-1 flex-col min-h-0">
       <div className="border-b border-border bg-card px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Order History</h1>
-            <p className="text-sm text-muted-foreground">
-              Riwayat pesanan hari ini
-            </p>
+            <p className="text-sm text-muted-foreground">{getRangeLabel()}</p>
           </div>
           <Button variant="outline" size="sm" onClick={handleRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -74,10 +90,14 @@ export default function OrdersPage() {
           </Button>
         </div>
       </div>
- 
-      <ScrollArea className="flex-1 overflow-y-auto">
+
+      <div className="flex-1 overflow-y-auto">
         <div className="p-6 space-y-4 max-w-5xl mx-auto">
-          <OrderStats />
+          {/* Date Range Selector */}
+          <DateRangeSelector value={dateRange} onChange={setDateRange} />
+
+          {/* Stats — pass rangedOrders */}
+          <OrderStats orders={rangedOrders} />
 
           <div className="space-y-3">
             <OrderFilters
@@ -94,7 +114,7 @@ export default function OrdersPage() {
           </div>
 
           {filteredOrders.length === 0 ? (
-            <EmptyState hasOrders={todayOrders.length > 0} />
+            <EmptyState hasOrders={rangedOrders.length > 0} />
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
@@ -111,7 +131,7 @@ export default function OrdersPage() {
             </motion.div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       <OrderDetailModal
         order={selectedOrder}
@@ -128,12 +148,12 @@ function EmptyState({ hasOrders }: { hasOrders: boolean }) {
         <ShoppingBag className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold">
-        {hasOrders ? "No orders match" : "Belum ada order hari ini"}
+        {hasOrders ? "No orders match" : "Belum ada order di periode ini"}
       </h3>
       <p className="mt-1 text-sm text-muted-foreground max-w-xs">
         {hasOrders
           ? "Coba ubah filter atau search query"
-          : "Order pertama akan muncul di sini setelah checkout"}
+          : "Pilih range waktu lain atau buat order baru"}
       </p>
     </div>
   );

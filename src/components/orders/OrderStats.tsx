@@ -2,27 +2,22 @@
 
 import { useMemo } from "react";
 import { ShoppingBag, DollarSign, Clock, XCircle } from "lucide-react";
-import { useOrderStore } from "@/store/useOrderStatus";
+import { CompletedOrder } from "@/types/order";
 import { formatCurrency } from "@/lib/format";
 
-export function OrderStats() {
-  const allOrders = useOrderStore((s) => s.orders);
+interface OrderStatsProps {
+  orders: CompletedOrder[];
+}
 
-  const todayOrders = useMemo(() => {
-    const today = new Date().toDateString();
-    return allOrders.filter(
-      (o) => new Date(o.createdAt).toDateString() === today
-    );
-  }, [allOrders]);
-
+export function OrderStats({ orders }: OrderStatsProps) {
   const completedOrders = useMemo(
-    () => todayOrders.filter((o) => o.status === "completed"),
-    [todayOrders]
+    () => orders.filter((o) => o.status === "completed"),
+    [orders]
   );
 
   const voidedOrders = useMemo(
-    () => todayOrders.filter((o) => o.status === "voided"),
-    [todayOrders]
+    () => orders.filter((o) => o.status === "voided"),
+    [orders]
   );
 
   const totalRevenue = useMemo(
