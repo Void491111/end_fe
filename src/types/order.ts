@@ -6,7 +6,7 @@ export interface CartItem extends MenuItem {
 }
 
 export type OrderType = "dine-in" | "Takeaway";
-export type OrderStatus = "pending" | "Completed" | "voided";
+export type OrderStatus = "pending" | "completed" | "voided";
 export type PaymentMethod = "cash";
 
 export interface CompletedOrder {

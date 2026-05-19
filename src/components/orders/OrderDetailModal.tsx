@@ -42,18 +42,7 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
 
   return (
     <Dialog open={!!order} onOpenChange={(open: boolean) => !open && onClose()}>
-      <DialogContent
-        className="sm:max-w-md"
-        variant="premium"
-        style={{
-          display: "grid",
-          gridTemplateRows: "auto auto auto auto 1fr auto",
-          maxHeight: "90vh",
-          height: "90vh",
-          overflow: "hidden",
-        }}
-      >
-        {/* 1. Header */}
+      <DialogContent variant="premium">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
@@ -68,7 +57,7 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
           </div>
         </DialogHeader>
 
-        {/* 2. Queue */}
+        {/* Queue */}
         <div className="text-center">
           <p className="text-xs text-muted-foreground uppercase tracking-wider">
             Nomor Antrian
@@ -83,7 +72,7 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
           </p>
         </div>
 
-        {/* 3. Meta */}
+        {/* Meta */}
         <div className="space-y-2 rounded-lg bg-secondary/30 p-3 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="h-4 w-4" />
@@ -108,19 +97,12 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
           </div>
         </div>
 
-        {/* 4. Items label */}
-        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          Items ({order.items.length})
-        </p>
-
-        {/* 5. Items SCROLL (1fr) - pake native overflow */}
-        <div
-          style={{
-            overflowY: "auto",
-            minHeight: 0,
-          }}
-        >
-          <div className="space-y-2 pr-2">
+        {/* Items */}
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Items ({order.items.length})
+          </p>
+          <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
             {order.items.map((item) => (
               <div
                 key={item.id}
@@ -147,79 +129,78 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
           </div>
         </div>
 
-        {/* 6. Footer (summary + actions) */}
-        <div className="space-y-3">
-          <div className="space-y-2 rounded-lg bg-secondary/30 p-4 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatCurrency(order.subtotal)}</span>
+        {/* Summary */}
+        <div className="space-y-2 rounded-lg bg-secondary/30 p-4 text-sm">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Subtotal</span>
+            <span>{formatCurrency(order.subtotal)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Tax (10%)</span>
+            <span>{formatCurrency(order.tax)}</span>
+          </div>
+          <Separator />
+          <div className="flex justify-between">
+            <span className="font-semibold">Total</span>
+            <span className="font-bold text-primary">
+              {formatCurrency(order.total)}
+            </span>
+          </div>
+          <Separator />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Cash Received</span>
+            <span>{formatCurrency(order.cashReceived)}</span>
+          </div>
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Kembalian</span>
+            <span>{formatCurrency(order.changeAmount)}</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        {!isVoided && !showConfirmVoid && (
+          <Button
+            variant="outline"
+            className="w-full text-destructive hover:text-destructive hover:border-destructive/50"
+            onClick={() => setShowConfirmVoid(true)}
+          >
+            Void Order
+          </Button>
+        )}
+
+        {showConfirmVoid && (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-destructive">
+                  Void order ini?
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Aksi ini tidak bisa dibatalkan
+                </p>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Tax (10%)</span>
-              <span>{formatCurrency(order.tax)}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between">
-              <span className="font-semibold">Total</span>
-              <span className="font-bold text-primary">
-                {formatCurrency(order.total)}
-              </span>
-            </div>
-            <Separator />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Cash Received</span>
-              <span>{formatCurrency(order.cashReceived)}</span>
-            </div>
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Kembalian</span>
-              <span>{formatCurrency(order.changeAmount)}</span>
+            <div className="flex gap-2 mt-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => setShowConfirmVoid(false)}
+              >
+                Batal
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="flex-1"
+                onClick={handleVoid}
+              >
+                Ya, Void
+              </Button>
             </div>
           </div>
-
-          {!isVoided && !showConfirmVoid && (
-            <Button
-              variant="outline"
-              className="w-full text-destructive hover:text-destructive hover:border-destructive/50"
-              onClick={() => setShowConfirmVoid(true)}
-            >
-              Void Order
-            </Button>
-          )}
-
-          {showConfirmVoid && (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-destructive">
-                    Void order ini?
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Aksi ini tidak bisa dibatalkan
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-3">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => setShowConfirmVoid(false)}
-                >
-                  Batal
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="flex-1"
-                  onClick={handleVoid}
-                >
-                  Ya, Void
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -36,7 +36,7 @@ export default function OrdersPage() {
   const counts = useMemo(
     () => ({
       all: todayOrders.length,
-      completed: todayOrders.filter((o) => o.status === "Completed").length,
+      completed: todayOrders.filter((o) => o.status === "completed").length,
       voided: todayOrders.filter((o) => o.status === "voided").length,
     }),
     [todayOrders]
