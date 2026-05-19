@@ -38,7 +38,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
           {/* Queue Number */}
           <div
             className={cn(
-              "flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl font-bold",
+              "flex h-14 w-14 shrink-0 items-center justify-center rounded-xl font-bold",
               isVoided
                 ? "bg-muted text-muted-foreground"
                 : "bg-primary/10 text-primary"
@@ -90,7 +90,7 @@ export function OrderCard({ order, onClick }: OrderCardProps) {
             <p className="text-xs text-muted-foreground">Cash</p>
           </div>
 
-          <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
         </div>
       </Card>
     </motion.div>

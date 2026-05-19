@@ -31,7 +31,7 @@ const QUICK_AMOUNTS = [20000, 50000, 100000];
 export function CheckoutModal({ open, onOpenChange }: CheckoutModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+      <DialogContent variant="premium">
         {open && <CheckoutContent onOpenChange={onOpenChange} />}
       </DialogContent>
     </Dialog>

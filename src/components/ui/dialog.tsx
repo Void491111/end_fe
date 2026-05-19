@@ -39,7 +39,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-50 bg-black/40 duration-100 supports-backdrop-filter:backdrop-blur-sm data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         className
       )}
       {...props}
@@ -51,33 +51,64 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  variant = "default",
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  variant?: "default" | "premium"
 }) {
+  const isPremium = variant === "premium"
+
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          // Default variant
+          !isPremium &&
+            "grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 sm:max-w-sm",
+          // Premium variant — double border effect with padding
+          isPremium &&
+             "w-full max-w-[calc(100%-2rem)] sm:max-w-md max-h-[90vh] p-1.5 rounded-3xl bg-transparent ring-2 ring-foreground/40 dark:ring-white/40 flex",
           className
         )}
         {...props}
       >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button
-              variant="ghost"
-              className="absolute top-2 right-2"
-              size="icon-sm"
-            >
-              <XIcon />
-              <span className="sr-only">Close</span>
-            </Button>
-          </DialogPrimitive.Close>
+        {isPremium ? (
+          // Premium: inner card with its own bg + grid layout
+          <div className="grid gap-4 rounded-[20px] bg-popover p-6 text-sm text-popover-foreground w-full overflow-y-auto">
+            {children}
+            {showCloseButton && (
+              <DialogPrimitive.Close data-slot="dialog-close" asChild>
+                <Button
+                  variant="ghost"
+                  className="absolute top-4 right-4 text-white/70 hover:text-white hover:bg-white/10"
+                  size="icon-sm"
+                >
+                  <XIcon />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </DialogPrimitive.Close>
+            )}
+          </div>
+        ) : (
+          <>
+            {children}
+            {showCloseButton && (
+              <DialogPrimitive.Close data-slot="dialog-close" asChild>
+                <Button
+                  variant="ghost"
+                  className="absolute top-2 right-2"
+                  size="icon-sm"
+                >
+                  <XIcon />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </DialogPrimitive.Close>
+            )}
+          </>
         )}
       </DialogPrimitive.Content>
     </DialogPortal>

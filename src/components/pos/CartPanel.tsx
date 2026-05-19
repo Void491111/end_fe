@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart, Trash2 } from "lucide-react";
+import { ShoppingCart, Trash2, AlertTriangle } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
 import { useHydration } from "@/hooks/useHydration";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { CartItemRow } from "./CartItem";
 import { OrderSummary } from "./OrderSummary";
 import { OrderTypeToggle } from "./OrderTypeToggle";
@@ -21,10 +27,16 @@ export function CartPanel() {
   const clearCart = useCartStore((s) => s.clearCart);
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
 
-  const handleClear = () => {
+  const handleClearClick = () => {
     if (items.length === 0) return;
+    setConfirmClearOpen(true);
+  };
+
+  const handleConfirmClear = () => {
     clearCart();
+    setConfirmClearOpen(false);
     toast.success("Cart cleared");
   };
 
@@ -36,7 +48,6 @@ export function CartPanel() {
     setCheckoutOpen(true);
   };
 
-  // Render only after hydration to avoid SSR mismatch
   const displayItems = hydrated ? items : [];
   const displayCount = hydrated ? itemCount : 0;
 
@@ -57,7 +68,7 @@ export function CartPanel() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleClear}
+              onClick={handleClearClick}
               className="h-8 text-muted-foreground hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
@@ -99,6 +110,41 @@ export function CartPanel() {
       </aside>
 
       <CheckoutModal open={checkoutOpen} onOpenChange={setCheckoutOpen} />
+
+      {/* Confirmation Modal — Clear Cart */}
+      <Dialog open={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
+        <DialogContent variant="premium">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+              </div>
+              <DialogTitle>Hapus semua pesanan?</DialogTitle>
+            </div>
+          </DialogHeader>
+
+          <p className="text-sm text-muted-foreground">
+            {displayCount} item akan dihapus dari cart. Aksi ini tidak bisa dibatalkan.
+          </p>
+
+          <div className="flex gap-2 mt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setConfirmClearOpen(false)}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={handleConfirmClear}
+            >
+              Ya, Hapus
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

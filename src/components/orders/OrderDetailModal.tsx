@@ -44,6 +44,7 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
     <Dialog open={!!order} onOpenChange={(open: boolean) => !open && onClose()}>
       <DialogContent
         className="sm:max-w-md"
+        variant="premium"
         style={{
           display: "grid",
           gridTemplateRows: "auto auto auto auto 1fr auto",

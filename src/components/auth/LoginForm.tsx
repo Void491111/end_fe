@@ -41,7 +41,7 @@ export function LoginForm() {
       "mock-token-12345"
     );
 
-    toast.success("Selamat datang, Andi!");
+    toast.success("Selamat Person 1, Andi!");
     setIsLoading(false);
     router.push("/pos");
   };
