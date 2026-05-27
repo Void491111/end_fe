@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CartItem, OrderType } from "@/types/order";
+import { CartItem, OrderType, IceLevel, SugarLevel } from "@/types/order";
 import { MenuItem } from "@/types/menu";
 import { TAX_RATE } from "@/lib/constants";
 
@@ -8,10 +8,15 @@ interface CartState {
   items: CartItem[];
   orderType: OrderType;
 
-  addItem: (item: MenuItem) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  updateNotes: (id: string, notes: string) => void;
+  addItem: (
+    item: MenuItem,
+    iceLevel?: IceLevel,
+    sugarLevel?: SugarLevel,
+    notes?: string
+  ) => void;
+  removeItem: (cartItemId: string) => void;
+  updateQuantity: (cartItemId: string, quantity: number) => void;
+  updateNotes: (cartItemId: string, notes: string) => void;
   setOrderType: (type: OrderType) => void;
   clearCart: () => void;
 
@@ -27,39 +32,57 @@ export const useCartStore = create<CartState>()(
       items: [],
       orderType: "dine-in",
 
-      addItem: (item: MenuItem) =>
+      addItem: (
+        item: MenuItem,
+        iceLevel: IceLevel = "Normal",
+        sugarLevel: SugarLevel = "Normal",
+        notes: string = ""
+      ) => 
         set((state) => {
-          const existing = state.items.find((i) => i.id === item.id);
+          // Buat ID unik gabungan dari id menu + kustomisasi supaya item dengan notes beda tidak ter-merge
+          const cartItemId = `${item.id}-${iceLevel}-${sugarLevel}-${notes}`;
+
+          const existing = state.items.find((i) => i.cartItemId === cartItemId);
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+                i.cartItemId === cartItemId
+                  ? { ...i, quantity: i.quantity + 1 }
+                  : i
               ),
             };
           }
-          const newItem: CartItem = { ...item, quantity: 1 };
+          
+          const newItem: CartItem = {
+            ...item,
+            cartItemId,
+            quantity: 1,
+            iceLevel,
+            sugarLevel,
+            notes,
+          };
           return { items: [...state.items, newItem] };
         }),
 
-      removeItem: (id: string) =>
+      removeItem: (cartItemId: string) =>
         set((state) => ({
-          items: state.items.filter((i) => i.id !== id),
+          items: state.items.filter((i) => i.cartItemId !== cartItemId),
         })),
 
-      updateQuantity: (id: string, quantity: number) =>
+      updateQuantity: (cartItemId: string, quantity: number) =>
         set((state) => ({
           items:
             quantity <= 0
-              ? state.items.filter((i) => i.id !== id)
+              ? state.items.filter((i) => i.cartItemId !== cartItemId)
               : state.items.map((i) =>
-                  i.id === id ? { ...i, quantity } : i
+                  i.cartItemId === cartItemId ? { ...i, quantity } : i
                 ),
         })),
 
-      updateNotes: (id: string, notes: string) =>
+      updateNotes: (cartItemId: string, notes: string) =>
         set((state) => ({
           items: state.items.map((i) =>
-            i.id === id ? { ...i, notes } : i
+            i.cartItemId === cartItemId ? { ...i, notes } : i
           ),
         })),
 
