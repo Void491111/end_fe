@@ -21,10 +21,10 @@ export function OrderTypeToggle() {
         Dine In
       </button>
       <button
-        onClick={() => setOrderType("takeaway")}
+        onClick={() => setOrderType("Takeaway")}
         className={cn(
           "rounded-md px-3 py-2 text-sm font-medium transition-all",
-          orderType === "takeaway"
+          orderType === "Takeaway"
             ? "bg-card text-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground"
         )}
