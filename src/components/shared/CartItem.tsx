@@ -25,7 +25,7 @@ export function CartItemRow({ item }: CartItemProps) {
       className="group flex gap-3 rounded-lg border border-border bg-card p-3"
     >
       {/* Image placeholder */}
-      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-accent text-lg">
+      <div className="flex h-12 w-12 -shrink-0 items-center justify-center rounded-md bg-linear-to-br from-primary/20 to-accent text-lg">
         ☕
       </div>
 
