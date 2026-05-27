@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, History } from "lucide-react";
+import { Search, LayoutGrid, History, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { usePOSStore } from "@/store/usePOSStore";
 import { APP_NAME } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
   const pathname = usePathname();
@@ -26,19 +33,44 @@ export function Header() {
         <span className="text-lg font-semibold tracking-tight">{APP_NAME}</span>
       </div>
 
-      {/* Nav */}
-      <nav className="flex items-center gap-1 ml-4">
-        <NavLink href="/pos" icon={LayoutGrid} active={pathname === "/pos"}>
-          POS
-        </NavLink>
-        <NavLink
-          href="/orders"
-          icon={History}
-          active={pathname === "/orders"}
-        >
-          Orders
-        </NavLink>
-      </nav>
+      {/* Navigation Dropdown (Menggantikan NavLink) */}
+      <div className="ml-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
+            >
+              {isPos ? (
+                <>
+                  <LayoutGrid className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">POS</span>
+                </>
+              ) : (
+                <>
+                  <History className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">Orders</span>
+                </>
+              )}
+              <ChevronDown className="h-4 w-4 text-muted-foreground ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-40">
+            <DropdownMenuItem asChild>
+              <Link href="/pos" className="w-full cursor-pointer flex items-center gap-2">
+                <LayoutGrid className="h-4 w-4" />
+                <span>POS</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/orders" className="w-full cursor-pointer flex items-center gap-2">
+                <History className="h-4 w-4" />
+                <span>Orders</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Search (only on POS page) */}
       {isPos && (
@@ -59,32 +91,5 @@ export function Header() {
         <UserMenu />
       </div>
     </header>
-  );
-}
-
-function NavLink({
-  href,
-  icon: Icon,
-  active,
-  children,
-}: {
-  href: string;
-  icon: React.ElementType;
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-        active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:text-foreground hover:bg-accent"
-      )}
-    >
-      <Icon className="h-4 w-4" />
-      {children}
-    </Link>
   );
 }

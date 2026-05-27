@@ -1,8 +1,15 @@
 import { MenuItem } from "./menu";
 
+// Tambahan tipe data khusus untuk kustomisasi
+export type IceLevel = "Normal" | "Less Ice" | "No Ice";
+export type SugarLevel = "Normal" | "Less Sugar" | "No Sugar";
+
 export interface CartItem extends MenuItem {
+    cartItemId: string; // ID unik khusus untuk di keranjang
     quantity: number;
     notes?: string;
+    iceLevel?: IceLevel;
+    sugarLevel?: SugarLevel;
 }
 
 export type OrderType = "dine-in" | "Takeaway";
