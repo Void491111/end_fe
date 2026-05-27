@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useOrderStore } from "@/store/useOrderStatus";
+import { useOrderStore } from "@/store/useOrderStore";
 import { isInRange, DateRange } from "@/components/orders/DateRangeSelector";
 import { OrderFilter } from "@/components/orders/OrderFilters";
 import { SortOption, sortOrders } from "@/components/orders/OrderSort";

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
-import { useOrderStore } from "@/store/useOrderStatus";
+import { useOrderStore } from "@/store/useOrderStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CompletedOrder } from "@/types/order";
 

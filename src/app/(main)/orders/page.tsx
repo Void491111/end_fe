@@ -18,7 +18,7 @@ import {
   DateRange,
   isInRange,
 } from "@/components/orders/DateRangeSelector";
-import { useOrderStore } from "@/store/useOrderStatus";
+import { useOrderStore } from "@/store/useOrderStore";
 import { CompletedOrder } from "@/types/order";
 import { toast } from "sonner";
 

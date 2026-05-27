@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useOrderStore } from "@/store/useOrderStatus";
+import { useOrderStore } from "@/store/useOrderStore";
 import { CompletedOrder } from "@/types/order";
 import { formatCurrency } from "@/lib/format";
 import { cn } from "@/lib/utils";
