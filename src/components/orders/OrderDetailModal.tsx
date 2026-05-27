@@ -116,8 +116,17 @@ export function OrderDetailModal({ order, onClose }: OrderDetailModalProps) {
                     <p className="text-sm font-medium line-clamp-1">
                       {item.name}
                     </p>
+                    {(item.iceLevel !== "Normal" || item.sugarLevel !== "Normal" || item.notes) && (
+                      <p className="text-[11px] text-muted-foreground mt-0.5 mb-1 leading-tight line-clamp-2">
+                        {[
+                          item.iceLevel !== "Normal" ? item.iceLevel : null,
+                          item.sugarLevel !== "Normal" ? item.sugarLevel : null,
+                          item.notes ? item.notes : null
+                        ].filter(Boolean).join(", ")}
+                      </p>
+                    )}
                     <p className="text-xs text-muted-foreground">
-                      {item.quantity} × {formatCurrency(item.price)}
+                      {item.quantity} x {formatCurrency(item.price)}
                     </p>
                   </div>
                 </div>
