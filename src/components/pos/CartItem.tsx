@@ -15,6 +15,17 @@ export function CartItemRow({ item }: CartItemProps) {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
+  // Helper untuk merangkai teks kustomisasi
+  const getCustomizationText = () => {
+    const parts = [];
+    if (item.iceLevel && item.iceLevel !== "Normal") parts.push(item.iceLevel);
+    if (item.sugarLevel && item.sugarLevel !== "Normal") parts.push(item.sugarLevel);
+    if (item.notes) parts.push(item.notes);
+    return parts.join(", ");
+  };
+
+  const customText = getCustomizationText();
+
   return (
     <motion.div
       layout
@@ -30,18 +41,26 @@ export function CartItemRow({ item }: CartItemProps) {
 
       <div className="flex flex-1 flex-col gap-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="text-sm font-medium leading-tight line-clamp-1">
-            {item.name}
-          </h4>
+          <div className="min-w-0 flex-1">
+            <h4 className="text-sm font-medium leading-tight line-clamp-1">
+              {item.name}
+            </h4>
+            {/* Ini dia teks kustomisasinya */}
+            {customText && (
+              <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight line-clamp-2">
+                {customText}
+              </p>
+            )}
+          </div>
           <button
-            onClick={() => removeItem(item.id)}
+            onClick={() => removeItem(item.cartItemId)}
             className="text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
 
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground mt-1">
           {formatCurrency(item.price)}
         </p>
 
@@ -51,7 +70,7 @@ export function CartItemRow({ item }: CartItemProps) {
               variant="outline"
               size="icon"
               className="h-6 w-6"
-              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+              onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
             >
               <Minus className="h-3 w-3" />
             </Button>
@@ -62,7 +81,7 @@ export function CartItemRow({ item }: CartItemProps) {
               variant="outline"
               size="icon"
               className="h-6 w-6"
-              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+              onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
             >
               <Plus className="h-3 w-3" />
             </Button>
