@@ -8,22 +8,23 @@ import { formatCurrency } from "@/lib/format";
 
 interface MenuCardProps {
   item: MenuItem;
+  onSelect: (item: MenuItem) => void;
 }
 
-export function MenuCard({ item }: MenuCardProps) {
-  const addItem = useCartStore((s) => s.addItem);
-  const itemInCart = useCartStore((s) =>
-    s.items.find((i) => i.id === item.id)
-  );
-
-  const quantity = itemInCart?.quantity ?? 0;
+export function MenuCard({ item, onSelect }: MenuCardProps) {
+  const cartItems = useCartStore((s) => s.items);
+  
+  // Hitung total quantity dari menu ini di keranjang (gabungan semua varian kustomisasi)
+  const quantity = cartItems
+    .filter((i) => i.id === item.id)
+    .reduce((sum, current) => sum + current.quantity, 0);
 
   return (
     <motion.div
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
-      onClick={() => addItem(item)}
+      onClick={() => onSelect(item)}
       className="group cursor-pointer overflow-hidden rounded-none bg-white dark:bg-[#131519] border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
     >
       {/* Image area */}
