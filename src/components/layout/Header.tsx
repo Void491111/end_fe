@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, History, ChevronDown } from "lucide-react";
+import { Search, LayoutGrid, History, ChevronDown, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
@@ -23,6 +23,8 @@ export function Header() {
   const setSearchQuery = usePOSStore((s) => s.setSearchQuery);
 
   const isPos = pathname === "/pos";
+  // Menambahkan pengecekan apakah sedang di halaman inventory
+  const isInventory = pathname === "/inventory";
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-6">
@@ -33,7 +35,7 @@ export function Header() {
         <span className="text-lg font-semibold tracking-tight">{APP_NAME}</span>
       </div>
 
-      {/* Navigation Dropdown (Menggantikan NavLink) */}
+      {/* Navigation Dropdown */}
       <div className="ml-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -41,10 +43,16 @@ export function Header() {
               variant="outline" 
               className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
             >
+              {/* Logika teks dinamis di tombol dropdown */}
               {isPos ? (
                 <>
                   <LayoutGrid className="h-4 w-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">POS</span>
+                </>
+              ) : isInventory ? (
+                <>
+                  <Package className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">Inventory</span>
                 </>
               ) : (
                 <>
@@ -55,6 +63,7 @@ export function Header() {
               <ChevronDown className="h-4 w-4 text-muted-foreground ml-1" />
             </Button>
           </DropdownMenuTrigger>
+          
           <DropdownMenuContent align="start" className="w-40">
             <DropdownMenuItem asChild>
               <Link href="/pos" className="w-full cursor-pointer flex items-center gap-2">
@@ -62,12 +71,22 @@ export function Header() {
                 <span>POS</span>
               </Link>
             </DropdownMenuItem>
+
             <DropdownMenuItem asChild>
               <Link href="/orders" className="w-full cursor-pointer flex items-center gap-2">
                 <History className="h-4 w-4" />
                 <span>Orders</span>
               </Link>
             </DropdownMenuItem>
+            
+            {/* INI POSISI YANG BENAR UNTUK INVENTORY (Di dalam DropdownMenuContent) */}
+            <DropdownMenuItem asChild>
+              <Link href="/inventory" className="w-full cursor-pointer flex items-center gap-2">
+                  <Package className="h-4 w-4"/>
+                  <span>Inventory</span>
+              </Link>
+            </DropdownMenuItem>
+            
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
