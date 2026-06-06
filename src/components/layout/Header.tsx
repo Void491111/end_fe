@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, History, ChevronDown, Package } from "lucide-react";
+import { Search, LayoutGrid, History, ChevronDown, Package, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { usePOSStore } from "@/store/usePOSStore";
 import { APP_NAME } from "@/lib/constants";
+
 
 import {
   DropdownMenu,
