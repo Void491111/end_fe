@@ -9,7 +9,6 @@ import { UserMenu } from "@/components/layout/UserMenu";
 import { usePOSStore } from "@/store/usePOSStore";
 import { APP_NAME } from "@/lib/constants";
 
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,8 +23,9 @@ export function Header() {
   const setSearchQuery = usePOSStore((s) => s.setSearchQuery);
 
   const isPos = pathname === "/pos";
-  // Menambahkan pengecekan apakah sedang di halaman inventory
   const isInventory = pathname === "/inventory";
+  // 1. Perbaikan rute dashboard
+  const isDashboard = pathname === "/dashboard"; 
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-6">
@@ -44,7 +44,7 @@ export function Header() {
               variant="outline" 
               className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
             >
-              {/* Logika teks dinamis di tombol dropdown */}
+              {/* 2. Logika teks dinamis yang sudah ditambahkan Dashboard */}
               {isPos ? (
                 <>
                   <LayoutGrid className="h-4 w-4 text-primary" />
@@ -54,6 +54,11 @@ export function Header() {
                 <>
                   <Package className="h-4 w-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">Inventory</span>
+                </>
+              ) : isDashboard ? (
+                <>
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">Dashboard</span>
                 </>
               ) : (
                 <>
@@ -80,11 +85,18 @@ export function Header() {
               </Link>
             </DropdownMenuItem>
             
-            {/* INI POSISI YANG BENAR UNTUK INVENTORY (Di dalam DropdownMenuContent) */}
             <DropdownMenuItem asChild>
               <Link href="/inventory" className="w-full cursor-pointer flex items-center gap-2">
                   <Package className="h-4 w-4"/>
                   <span>Inventory</span>
+              </Link>
+            </DropdownMenuItem>
+
+            {/* 3. Ini list menu Dashboard-nya boss! */}
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard" className="w-full cursor-pointer flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4"/>
+                  <span>Dashboard</span>
               </Link>
             </DropdownMenuItem>
             
