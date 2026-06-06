@@ -38,59 +38,57 @@
 :root {
   --radius: 0.75rem;
   
-  /* Light Mode - Warm Cream Theme */
-  --background: oklch(0.96 0 0);
-  --foreground: oklch(0.15 0.01 80);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.01 80);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.01 80);
+  /* Light Mode - Doff Monochrome (Off-white & Charcoal) */
+  --background: hsl(0, 0%, 97%);
+  --foreground: hsl(0, 0%, 15%);
+  --card: hsl(0, 0%, 99%);
+  --card-foreground: hsl(0, 0%, 15%);
+  --popover: hsl(0, 0%, 99%);
+  --popover-foreground: hsl(0, 0%, 15%);
   
-  /* Amber/Yellow Brand */
-  --primary:  oklch(0.58 0.22 260);
-  --primary-foreground: oklch(0.15 0.01 80);
+  --primary: hsl(0, 0%, 18%);
+  --primary-foreground: hsl(0, 0%, 96%);
   
-  --secondary: oklch(0.96 0.01 80);
-  --secondary-foreground: oklch(0.20 0.01 80);
-  --muted: oklch(0.96 0.01 80);
-  --muted-foreground: oklch(0.50 0.01 80);
-  --accent: oklch(0.95 0.03 75);
-  --accent-foreground: oklch(0.20 0.05 75);
+  --secondary: hsl(0, 0%, 90%);
+  --secondary-foreground: hsl(0, 0%, 15%);
+  --muted: hsl(0, 0%, 90%);
+  --muted-foreground: hsl(0, 0%, 40%);
+  --accent: hsl(0, 0%, 90%);
+  --accent-foreground: hsl(0, 0%, 15%);
   
-  --destructive: oklch(0.60 0.20 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: hsl(0, 70%, 55%);
+  --destructive-foreground: hsl(0, 0%, 98%);
   
-  --border: oklch(0.92 0.01 80);
-  --input: oklch(0.92 0.01 80);
-  --ring:  oklch(0.58 0.22 260);
+  --border: hsl(0, 0%, 88%);
+  --input: hsl(0, 0%, 88%);
+  --ring: hsl(0, 0%, 15%);
 }
 
 .dark {
-  /* Dark Mode - Deep Charcoal */
-  --background: oklch(0.13 0.005 250);
-  --foreground: oklch(0.95 0.01 80);
-  --card: oklch(0.17 0.008 250);
-  --card-foreground: oklch(0.95 0.01 80);
-  --popover: oklch(0.17 0.008 250);
-  --popover-foreground: oklch(0.95 0.01 80);
+  /* Dark Mode - Matte Black / Charcoal */
+  --background: hsl(0, 0%, 12%);
+  --foreground: hsl(0, 0%, 90%);
+  --card: hsl(0, 0%, 16%);
+  --card-foreground: hsl(0, 0%, 90%);
+  --popover: hsl(0, 0%, 16%);
+  --popover-foreground: hsl(0, 0%, 90%);
   
-  /* Amber/Yellow Brand */
-  --primary: oklch(0.68 0.22 260);
-  --primary-foreground: oklch(0.13 0.005 250);
+  --primary: hsl(0, 0%, 85%);
+  --primary-foreground: hsl(0, 0%, 12%);
   
-  --secondary: oklch(0.22 0.008 250);
-  --secondary-foreground: oklch(0.95 0.01 80);
-  --muted: oklch(0.22 0.008 250);
-  --muted-foreground: oklch(0.65 0.01 80);
-  --accent: oklch(0.25 0.03 75);
-  --accent-foreground: oklch(0.95 0.05 75);
+  --secondary: hsl(0, 0%, 22%);
+  --secondary-foreground: hsl(0, 0%, 90%);
+  --muted: hsl(0, 0%, 22%);
+  --muted-foreground: hsl(0, 0%, 65%);
+  --accent: hsl(0, 0%, 22%);
+  --accent-foreground: hsl(0, 0%, 90%);
   
-  --destructive: oklch(0.55 0.20 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: hsl(0, 60%, 40%);
+  --destructive-foreground: hsl(0, 0%, 90%);
   
-  --border: oklch(0.25 0.008 250);
-  --input: oklch(0.25 0.008 250);
-  --ring: oklch(0.68 0.22 260);
+  --border: hsl(0, 0%, 22%);
+  --input: hsl(0, 0%, 22%);
+  --ring: hsl(0, 0%, 70%);
 }
 
 @layer base {

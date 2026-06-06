@@ -65,50 +65,30 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
-          // Default variant
-          !isPremium &&
-            "grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 sm:max-w-sm",
-          // Premium variant — double border effect with padding
-          isPremium &&
-             "w-full max-w-[calc(100%-2rem)] sm:max-w-md max-h-[90vh] p-1.5 rounded-3xl bg-transparent ring-2 ring-foreground/40 dark:ring-white/40 flex",
+          // KITA SATUKAN SEMUA DI SINI:
+          // border-none dan outline-none untuk mematikan semua garis bawaan Radix/Tailwind
+          "fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 rounded-3xl bg-popover p-6 text-sm text-popover-foreground shadow-2xl outline-none border-none duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          
+          // Perbedaan ukuran untuk varian default vs premium
+          !isPremium 
+            ? "max-w-[calc(100%-2rem)] sm:max-w-sm" 
+            : "max-w-[calc(100%-2rem)] sm:max-w-md max-h-[90vh] overflow-y-auto",
           className
         )}
         {...props}
       >
-        {isPremium ? (
-          // Premium: inner card with its own bg + grid layout
-          <div className="grid gap-4 rounded-[20px] bg-popover p-6 text-sm text-popover-foreground w-full overflow-y-auto">
-            {children}
-            {showCloseButton && (
-              <DialogPrimitive.Close data-slot="dialog-close" asChild>
-                <Button
-                  variant="ghost"
-                  className="absolute top-4 right-4 text-white/70 hover:text-white hover:bg-white/10"
-                  size="icon-sm"
-                >
-                  <XIcon />
-                  <span className="sr-only">Close</span>
-                </Button>
-              </DialogPrimitive.Close>
-            )}
-          </div>
-        ) : (
-          <>
-            {children}
-            {showCloseButton && (
-              <DialogPrimitive.Close data-slot="dialog-close" asChild>
-                <Button
-                  variant="ghost"
-                  className="absolute top-2 right-2"
-                  size="icon-sm"
-                >
-                  <XIcon />
-                  <span className="sr-only">Close</span>
-                </Button>
-              </DialogPrimitive.Close>
-            )}
-          </>
+        {children}
+        {showCloseButton && (
+          <DialogPrimitive.Close data-slot="dialog-close" asChild>
+            <Button
+              variant="ghost"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+              size="icon-sm"
+            >
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </Button>
+          </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>
     </DialogPortal>
@@ -137,7 +117,8 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        // Footer: Hapus border-t, hapus bg-muted/50, hapus margin negatif biar menyatu
+        "mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
         className
       )}
       {...props}
@@ -160,7 +141,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "font-heading text-base leading-none font-medium",
+        "font-heading text-lg leading-none font-semibold",
         className
       )}
       {...props}

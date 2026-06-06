@@ -25,7 +25,7 @@ export function MenuCard({ item, onSelect }: MenuCardProps) {
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
       onClick={() => onSelect(item)}
-      className="group cursor-pointer overflow-hidden rounded-none bg-white dark:bg-[#131519] border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
+      className="group cursor-pointer overflow-hidden rounded-md bg-white dark:bg-[#131519] border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
     >
       {/* Image area */}
       <div className="relative aspect-square overflow-hidden flex items-center justify-center">
