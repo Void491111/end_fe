@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMenuStore } from "@/store/useMenuStore";
 
 interface CustomizationModalProps {
   item: MenuItem | null;
@@ -24,13 +25,20 @@ export function CustomizationModal({ item, isOpen, onClose }: CustomizationModal
   const [ice, setIce] = useState<IceLevel>("Normal");
   const [sugar, setSugar] = useState<SugarLevel>("Normal");
   const [notes, setNotes] = useState("");
+  
+  // PERBAIKAN 1: Cara narik data item yang benar
+  const liveItem = useMenuStore((s) => s.items.find((i) => i.id === item?.id));
+  const isAvailable = liveItem?.isAvailable ?? false;
 
   if (!item) return null;
 
   const handleAdd = () => {
+    // PERBAIKAN 2: Pertahanan ganda, tolak kalau item habis
+    if (!item || !isAvailable) return;
+
     addItem(item, ice, sugar, notes);
     setIce("Normal");
-    setSugar("Normal"),
+    setSugar("Normal"); // PERBAIKAN 3: Titik koma, bukan koma
     setNotes("");
     onClose();
   };
@@ -96,7 +104,10 @@ export function CustomizationModal({ item, isOpen, onClose }: CustomizationModal
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Batal</Button>
-          <Button onClick={handleAdd}>Tambah ke Keranjang</Button>
+          {/* PERBAIKAN 4: Gembok tombol dan ubah teksnya kalau stok habis */}
+          <Button disabled={!isAvailable} onClick={handleAdd}>
+            {isAvailable ? "Tambah ke Keranjang" : "Stok Habis"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
