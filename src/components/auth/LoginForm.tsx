@@ -11,9 +11,9 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export function LoginForm() {
   const router = useRouter();
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const login = useAuthStore((s) => s.login);
 
-  const [email, setEmail] = useState("kasir@mooiste.com");
+  const [email, setEmail] = useState("admin@mooiste.com");
   const [password, setPassword] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,23 +27,17 @@ export function LoginForm() {
     }
 
     setIsLoading(true);
-
-    // TODO: replace with real API call to Laravel later
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    setAuth(
-      {
-        id: "1",
-        name: "Person 1",
-        email,
-        role: "kasir",
-      },
-      "mock-token-12345"
-    );
-
-    toast.success("Selamat Person 1, Andi!");
-    setIsLoading(false);
-    router.push("/pos");
+    try {
+      await login(email, password);
+      const user = useAuthStore.getState().user;
+      toast.success(`Selamat datang, ${user?.name}!`);
+      router.push("/pos");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Login gagal";
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,7 +47,7 @@ export function LoginForm() {
         <Input
           id="email"
           type="email"
-          placeholder="kasir@mooiste.com"
+          placeholder="admin@mooiste.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
