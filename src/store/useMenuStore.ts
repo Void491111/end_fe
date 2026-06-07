@@ -1,26 +1,59 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { MenuItem } from "@/types/menu";
-import { menuItems as defaultMenu } from "@/data/menuItems"; // Ambil data statis sebagai nilai awal
+import { menuApi } from "@/lib/api";
 
 interface MenuState {
   items: MenuItem[];
-  toggleAvailability: (id: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  fetchMenus: () => Promise<void>;
+  toggleAvailability: (id: string) => Promise<void>;
 }
 
-export const useMenuStore = create<MenuState>()(
-  persist(
-    (set) => ({
-      items: defaultMenu,
-      
-      // Fungsi untuk mengubah status Tersedia <-> Habis
-      toggleAvailability: (id: string) =>
-        set((state) => ({
-          items: state.items.map((item) =>
-            item.id === id ? { ...item, isAvailable: !item.isAvailable } : item
-          ),
-        })),
-    }),
-    { name: "mooiste-inventory" }
-  )
-);
+// Map API response shape → FE MenuItem shape
+const mapMenu = (raw: any): MenuItem => ({
+  id: String(raw.id),
+  name: raw.name,
+  description: raw.description ?? "",
+  price: parseFloat(raw.price),
+  categoryId: String(raw.category_id),
+  imageUrl: raw.image ?? "",
+  isAvailable: !!raw.is_available,
+});
+
+export const useMenuStore = create<MenuState>((set, get) => ({
+  items: [],
+  isLoading: false,
+  error: null,
+
+  fetchMenus: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await menuApi.list();
+      set({ items: data.map(mapMenu), isLoading: false });
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Gagal load menu",
+        isLoading: false,
+      });
+    }
+  },
+
+  toggleAvailability: async (id: string) => {
+    // Optimistic update — UI langsung berubah, kalo gagal di-rollback
+    const prevItems = get().items;
+    set({
+      items: prevItems.map((item) =>
+        item.id === id ? { ...item, isAvailable: !item.isAvailable } : item
+      ),
+    });
+
+    try {
+      await menuApi.toggleAvailability(parseInt(id));
+    } catch (err) {
+      // Rollback kalo API call gagal
+      set({ items: prevItems });
+      throw err;
+    }
+  },
+}));
