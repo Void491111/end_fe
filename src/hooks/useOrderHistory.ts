@@ -1,49 +1,58 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useOrderStore } from "@/store/useOrderStore";
-import { isInRange, DateRange } from "@/components/orders/DateRangeSelector";
+import { DateRange } from "@/components/orders/DateRangeSelector";
 import { OrderFilter } from "@/components/orders/OrderFilters";
 import { SortOption, sortOrders } from "@/components/orders/OrderSort";
 
+// Map FE DateRange → BE period param
+const mapPeriod = (range: DateRange): string => {
+  // Asumsinya FE pake "today" | "7d" | "30d" | "90d" — kalo beda, di-map di sini
+  return range as string;
+};
+
 export function useOrderHistory() {
-  const allOrders = useOrderStore((s) => s.orders);
+  const orders = useOrderStore((s) => s.orders);
+  const stats = useOrderStore((s) => s.stats);
+  const isLoading = useOrderStore((s) => s.isLoading);
+  const fetchOrders = useOrderStore((s) => s.fetchOrders);
+  const fetchStats = useOrderStore((s) => s.fetchStats);
 
   const [dateRange, setDateRange] = useState<DateRange>("today");
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [filter, setFilter] = useState<OrderFilter>("all");
   const [search, setSearch] = useState("");
 
-  const rangedOrders = useMemo(
-    () => allOrders.filter((o) => isInRange(new Date(o.createdAt), dateRange)),
-    [allOrders, dateRange]
-  );
+  // Fetch orders + stats kalo filter berubah
+  useEffect(() => {
+    const period = mapPeriod(dateRange);
+    const params: { period: string; status?: string; search?: string } = { period };
+    if (filter !== "all") params.status = filter;
+    if (search) params.search = search;
 
-  const counts = useMemo(
-    () => ({
-      all: rangedOrders.length,
-      completed: rangedOrders.filter((o) => o.status === "completed").length,
-      voided: rangedOrders.filter((o) => o.status === "voided").length,
-    }),
-    [rangedOrders]
-  );
+    fetchOrders(params);
+    fetchStats(period);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateRange, filter, search]);
 
-  const filteredOrders = useMemo(() => {
-    const filtered = rangedOrders
-      .filter((o) => (filter === "all" ? true : o.status === filter))
-      .filter((o) =>
-        !search
-          ? true
-          : o.queueNumber.toLowerCase().includes(search.toLowerCase())
-      );
-    return sortOrders(filtered, sortBy);
-  }, [rangedOrders, filter, search, sortBy]);
+  // Counts dari stats (BE-side calc, akurat)
+  const counts = {
+    all: (stats?.total_orders ?? 0) + (stats?.voided_count ?? 0),
+    completed: stats?.total_orders ?? 0,
+    voided: stats?.voided_count ?? 0,
+  };
+
+  // Client-side sort (cheap)
+  const filteredOrders = sortOrders(orders, sortBy);
 
   return {
     // data
-    rangedOrders,
+    rangedOrders: orders,
     filteredOrders,
     counts,
+    stats,
+    isLoading,
     // filter state
     dateRange,
     sortBy,
