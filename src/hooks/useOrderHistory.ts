@@ -29,27 +29,29 @@ export function useOrderHistory() {
   const [filter, setFilter] = useState<OrderFilter>("all");
   const [search, setSearch] = useState("");
 
-  // Fetch orders + stats kalo filter berubah
+  // Fetch orders + stats saat filter berubah
   useEffect(() => {
     const period = mapPeriod(dateRange);
-    const params: { period: string; status?: string; search?: string } = { period };
-    if (filter !== "all") params.status = filter;
+    const params: { period: string; search?: string } = { period };
     if (search) params.search = search;
 
     fetchOrders(params);
     fetchStats(period);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, filter, search]);
+  }, [dateRange, search]);
 
-  // Counts dari stats (BE-side calc, akurat)
+  // Counts dari BE stats (akurat)
   const counts = {
     all: (stats?.total_orders ?? 0) + (stats?.voided_count ?? 0),
     completed: stats?.total_orders ?? 0,
     voided: stats?.voided_count ?? 0,
   };
 
-  // Client-side sort (cheap)
-  const filteredOrders = sortOrders(orders, sortBy);
+  // Filter client-side by tab + sort
+  const filteredOrders = sortOrders(
+    orders.filter((o) => filter === "all" || o.status === filter),
+    sortBy
+  );
 
   return {
     // data

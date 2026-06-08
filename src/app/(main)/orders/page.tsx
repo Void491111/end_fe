@@ -1,71 +1,56 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { RefreshCw, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OrderCard } from "@/components/orders/OrderCard";
 import { OrderDetailModal } from "@/components/orders/OrderDetailModal";
-import { OrderSort, SortOption, sortOrders } from "@/components/orders/OrderSort";
+import { OrderSort } from "@/components/orders/OrderSort";
 import { OrderStats } from "@/components/orders/OrderStats";
-import {
-  OrderFilters,
-  OrderFilter,
-} from "@/components/orders/OrderFilters";
-import {
-  DateRangeSelector,
-  DateRange,
-  isInRange,
-} from "@/components/orders/DateRangeSelector";
+import { OrderFilters } from "@/components/orders/OrderFilters";
+import { DateRangeSelector } from "@/components/orders/DateRangeSelector";
+import { useOrderHistory } from "@/hooks/useOrderHistory";
 import { useOrderStore } from "@/store/useOrderStore";
 import { CompletedOrder } from "@/types/order";
-import { toast } from "sonner";
 
 export default function OrdersPage() {
-  const allOrders = useOrderStore((s) => s.orders);
+  const {
+    rangedOrders,
+    filteredOrders,
+    counts,
+    isLoading,
+    dateRange,
+    sortBy,
+    filter,
+    search,
+    setDateRange,
+    setSortBy,
+    setFilter,
+    setSearch,
+  } = useOrderHistory();
 
-  const [dateRange, setDateRange] = useState<DateRange>("today");
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const fetchOrders = useOrderStore((s) => s.fetchOrders);
+  const fetchStats = useOrderStore((s) => s.fetchStats);
+
   const [selectedOrder, setSelectedOrder] = useState<CompletedOrder | null>(
     null
   );
-  const [filter, setFilter] = useState<OrderFilter>("all");
-  const [search, setSearch] = useState("");
-
-  // Filter berdasarkan date range
-  const rangedOrders = useMemo(() => {
-    return allOrders.filter((o) =>
-      isInRange(new Date(o.createdAt), dateRange)
-    );
-  }, [allOrders, dateRange]);
-
-  const counts = useMemo(
-    () => ({
-      all: rangedOrders.length,
-      completed: rangedOrders.filter((o) => o.status === "completed").length,
-      voided: rangedOrders.filter((o) => o.status === "voided").length,
-    }),
-    [rangedOrders]
-  );
-
-  const filteredOrders = useMemo(() => {
-    const lowerSearch = search.toLowerCase();
-    const filtered = rangedOrders
-      .filter((o) => {
-        if (filter === "all") return true;
-        return o.status === filter;
-      })
-      .filter((o) => {
-        if (!search) return true;
-        // Menggunakan optional chaining (?.) untuk mencegah error jika queueNumber null/undefined
-        return o.queueNumber?.toLowerCase().includes(lowerSearch);
-      });
-    return sortOrders(filtered, sortBy);
-  }, [rangedOrders, filter, search, sortBy]);
 
   const handleRefresh = async () => {
-    // TODO: Panggil fungsi fetch data dari store di sini (contoh: await fetchOrders())
+    const periodMap: Record<string, string> = {
+      today: "today",
+      "7days": "7d",
+      "30days": "30d",
+      "90days": "90d",
+    };
+    const period = periodMap[dateRange] ?? "today";
+    await Promise.all([
+      fetchOrders({ period, ...(search && { search }) }),
+      fetchStats(period),
+    ]);
     toast.success("Order list refreshed");
   };
 
@@ -92,8 +77,15 @@ export default function OrdersPage() {
             <h1 className="text-2xl font-bold">Order History</h1>
             <p className="text-sm text-muted-foreground">{getRangeLabel()}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={handleRefresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isLoading}
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
         </div>
@@ -101,13 +93,11 @@ export default function OrdersPage() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="p-6 space-y-4 max-w-5xl mx-auto">
-          {/* Date Range + Sort */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <DateRangeSelector value={dateRange} onChange={setDateRange} />
             <OrderSort value={sortBy} onChange={setSortBy} />
           </div>
 
-          {/* Stats — pass rangedOrders */}
           <OrderStats orders={rangedOrders} />
 
           <div className="space-y-3">
@@ -124,7 +114,11 @@ export default function OrdersPage() {
             />
           </div>
 
-          {filteredOrders.length === 0 ? (
+          {isLoading && rangedOrders.length === 0 ? (
+            <div className="flex justify-center py-16">
+              <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : filteredOrders.length === 0 ? (
             <EmptyState hasOrders={rangedOrders.length > 0} />
           ) : (
             <motion.div
@@ -159,7 +153,9 @@ function EmptyState({ hasOrders }: { hasOrders: boolean }) {
         <ShoppingBag className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold">
-        {hasOrders ? "Tidak ada pesanan yang sesuai" : "Belum ada order di periode ini"}
+        {hasOrders
+          ? "Tidak ada pesanan yang sesuai"
+          : "Belum ada order di periode ini"}
       </h3>
       <p className="mt-1 text-sm text-muted-foreground max-w-xs">
         {hasOrders
