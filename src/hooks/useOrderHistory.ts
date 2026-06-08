@@ -8,8 +8,13 @@ import { SortOption, sortOrders } from "@/components/orders/OrderSort";
 
 // Map FE DateRange → BE period param
 const mapPeriod = (range: DateRange): string => {
-  // Asumsinya FE pake "today" | "7d" | "30d" | "90d" — kalo beda, di-map di sini
-  return range as string;
+  switch (range) {
+    case "today": return "today";
+    case "7days": return "7d";
+    case "30days": return "30d";
+    case "90days": return "90d";
+    default: return "today";
+  }
 };
 
 export function useOrderHistory() {
