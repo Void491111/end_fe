@@ -22,6 +22,12 @@ export const useAuthStore = create<AuthState>()(
         try {
           const { data } = await authApi.login(email, password);
           // Save token to localStorage (untuk api.ts interceptor)
+
+          if ( data.user.role !== "kasir" ) {
+            throw new Error(
+              "Akun ini bukan akun kasir. Silahkan gunakan panel Admin untuk login"
+            );
+          } 
           localStorage.setItem("auth_token", data.token);
           set({ user: data.user, token: data.token });
         } catch (error) {
