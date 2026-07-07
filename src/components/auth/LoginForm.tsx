@@ -13,7 +13,7 @@ export function LoginForm() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
 
-  const [email, setEmail] = useState("admin@mooiste.com");
+  const [email, setEmail] = useState("kasir@mooiste.com");
   const [password, setPassword] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

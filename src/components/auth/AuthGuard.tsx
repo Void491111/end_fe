@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useHydration } from "@/hooks/useHydration";
@@ -20,16 +20,16 @@ export function AuthGuard({ children }: {children: React.ReactNode }) {
             return;
         }
 
-        if (user.role !== "kasir") {
+        if (user.role !== "cashier") {
             useAuthStore.getState().logout();
             router.replace("/login")
         }
     }, [hydrated, token, user, router]);
 
-    if (!hydrated || !token || !user || user.role !== "kasir") {
+    if (!hydrated || !token || !user || user.role !== "cashier") {
         return (
             <div className="flex h-screen items-center justify-center">
-                <Loader2 className="h-6 w-6 animate-spintext-muted-foreground"/>
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground"/>
             </div>
         );
     }

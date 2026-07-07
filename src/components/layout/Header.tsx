@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, History, ChevronDown, Package, BarChart3 } from "lucide-react";
+import { Search, LayoutGrid, History, ChevronDown, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
@@ -24,8 +24,6 @@ export function Header() {
 
   const isPos = pathname === "/pos";
   const isInventory = pathname === "/inventory";
-  // 1. Perbaikan rute dashboard
-  const isDashboard = pathname === "/dashboard"; 
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-6">
@@ -40,11 +38,10 @@ export function Header() {
       <div className="ml-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
             >
-              {/* 2. Logika teks dinamis yang sudah ditambahkan Dashboard */}
               {isPos ? (
                 <>
                   <LayoutGrid className="h-4 w-4 text-primary" />
@@ -55,11 +52,6 @@ export function Header() {
                   <Package className="h-4 w-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">Inventory</span>
                 </>
-              ) : isDashboard ? (
-                <>
-                  <BarChart3 className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">Dashboard</span>
-                </>
               ) : (
                 <>
                   <History className="h-4 w-4 text-primary" />
@@ -69,7 +61,7 @@ export function Header() {
               <ChevronDown className="h-4 w-4 text-muted-foreground ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          
+
           <DropdownMenuContent align="start" className="w-40">
             <DropdownMenuItem asChild>
               <Link href="/pos" className="w-full cursor-pointer flex items-center gap-2">
@@ -84,22 +76,13 @@ export function Header() {
                 <span>Orders</span>
               </Link>
             </DropdownMenuItem>
-            
+
             <DropdownMenuItem asChild>
               <Link href="/inventory" className="w-full cursor-pointer flex items-center gap-2">
-                  <Package className="h-4 w-4"/>
-                  <span>Inventory</span>
+                <Package className="h-4 w-4" />
+                <span>Inventory</span>
               </Link>
             </DropdownMenuItem>
-
-            {/* 3. Ini list menu Dashboard-nya boss! */}
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="w-full cursor-pointer flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4"/>
-                  <span>Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-            
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
