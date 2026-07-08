@@ -18,19 +18,20 @@ import { CompletedOrder } from "@/types/order";
 
 export default function OrdersPage() {
   const {
-    rangedOrders,
-    filteredOrders,
-    counts,
-    isLoading,
-    dateRange,
-    sortBy,
-    filter,
-    search,
-    setDateRange,
-    setSortBy,
-    setFilter,
-    setSearch,
-  } = useOrderHistory();
+  rangedOrders,
+  filteredOrders,
+  counts,
+  stats,          // ← tambah ini
+  isLoading,
+  dateRange,
+  sortBy,
+  filter,
+  search,
+  setDateRange,
+  setSortBy,
+  setFilter,
+  setSearch,
+} = useOrderHistory();
 
   const fetchOrders = useOrderStore((s) => s.fetchOrders);
   const fetchStats = useOrderStore((s) => s.fetchStats);
@@ -98,7 +99,13 @@ export default function OrdersPage() {
             <OrderSort value={sortBy} onChange={setSortBy} />
           </div>
 
-          <OrderStats orders={rangedOrders} />
+          <OrderStats 
+            totalOrders={stats?.total_orders ?? 0}
+            totalRevenue={stats?.total_revenue ?? 0}
+            avgOrder={stats?.avg_order ?? 0}
+            voidedCount={stats?.voided_count ?? 0}
+            voidedAmount={stats?.voided_amount ?? 0}
+          />
 
           <div className="space-y-3">
             <OrderFilters

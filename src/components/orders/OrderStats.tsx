@@ -1,42 +1,27 @@
 "use client";
 
-import { useMemo } from "react";
-import { ShoppingBag, DollarSign, Clock, XCircle } from "lucide-react";
-import { CompletedOrder } from "@/types/order";
+import { ShoppingBag, Wallet, Calculator, XCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format";
 
 interface OrderStatsProps {
-  orders: CompletedOrder[];
+  totalOrders: number;
+  totalRevenue: number;
+  avgOrder: number;
+  voidedCount: number;
+  voidedAmount: number;
 }
 
-export function OrderStats({ orders }: OrderStatsProps) {
-  const completedOrders = useMemo(
-    () => orders.filter((o) => o.status === "completed"),
-    [orders]
-  );
-
-  const voidedOrders = useMemo(
-    () => orders.filter((o) => o.status === "voided"),
-    [orders]
-  );
-
-  const totalRevenue = useMemo(
-    () => completedOrders.reduce((sum, o) => sum + o.total, 0),
-    [completedOrders]
-  );
-
-  const totalVoided = useMemo(
-    () => voidedOrders.reduce((sum, o) => sum + o.total, 0),
-    [voidedOrders]
-  );
-
-  const avgOrderValue =
-    completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
-
+export function OrderStats({
+  totalOrders,
+  totalRevenue,
+  avgOrder,
+  voidedCount,
+  voidedAmount,
+}: OrderStatsProps) {
   const stats = [
     {
       label: "Total Orders",
-      value: completedOrders.length.toString(),
+      value: totalOrders.toString(),
       icon: ShoppingBag,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
@@ -44,14 +29,14 @@ export function OrderStats({ orders }: OrderStatsProps) {
     {
       label: "Total Revenue",
       value: formatCurrency(totalRevenue),
-      icon: DollarSign,
+      icon: Wallet,
       color: "text-primary",
       bg: "bg-primary/10",
     },
     {
       label: "Avg Order",
-      value: formatCurrency(avgOrderValue),
-      icon: Clock,
+      value: formatCurrency(avgOrder),
+      icon: Calculator,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
@@ -94,11 +79,11 @@ export function OrderStats({ orders }: OrderStatsProps) {
             <p className="text-xs text-muted-foreground">Total Voided</p>
             <div className="flex items-baseline gap-2 flex-wrap">
               <p className="text-lg font-bold text-destructive">
-                {voidedOrders.length} order
+                {voidedCount} order
               </p>
               <span className="text-muted-foreground text-sm">•</span>
               <p className="text-lg font-bold text-destructive truncate">
-                {formatCurrency(totalVoided)}
+                {formatCurrency(voidedAmount)}
               </p>
             </div>
           </div>
