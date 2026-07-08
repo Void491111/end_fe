@@ -1,14 +1,30 @@
 "use client";
 
 import { useEffect } from "react";
-import * as Icons from "lucide-react";
+import { LayoutGrid, Loader2, Coffee, CupSoda, Utensils, Leaf, Cookie, Pizza, IceCream, Beer, Wine, Milk, Salad, Sandwich, GlassWater, LucideIcon } from "lucide-react";
 import { useCategoryStore } from "@/store/useCategoryStore";
 import { usePOSStore } from "@/store/usePOSStore";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LayoutGrid, Loader2 } from "lucide-react";
 
-// "All Menu" jadi entry pertama, sisanya dynamic dari API
+// Manual icon map — bypass Turbopack tree-shaking issue
+const ICON_MAP: Record<string, LucideIcon> = {
+  LayoutGrid,
+  Coffee,
+  CupSoda,
+  Utensils,
+  Leaf,
+  Cookie,
+  Pizza,
+  IceCream,
+  Beer,
+  Wine,
+  Milk,
+  Salad,
+  Sandwich,
+  GlassWater,
+};
+
 const ALL_CATEGORY = {
   id: "all",
   name: "All Menu",
@@ -30,7 +46,6 @@ export function CategorySidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Gabungin "All Menu" + kategori dari API
   const allCategories = [ALL_CATEGORY, ...items];
 
   return (
@@ -43,10 +58,7 @@ export function CategorySidebar() {
             </div>
           ) : (
             allCategories.map((category) => {
-              const Icon =
-                (Icons as unknown as Record<string, Icons.LucideIcon>)[
-                  category.icon
-                ] ?? LayoutGrid;
+              const Icon = ICON_MAP[category.icon] ?? LayoutGrid;
               const isActive = activeCategory === category.id;
 
               return (

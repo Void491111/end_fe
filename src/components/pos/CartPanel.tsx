@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CartItemRow } from "./CartItem";
 import { OrderSummary } from "./OrderSummary";
 import { OrderTypeToggle } from "./OrderTypeToggle";
-import { CheckoutModal } from "./CheckoutModal.tsx";
+import { CheckoutModal } from "./CheckoutModal";
 import { CartHeader } from "./CartHeader";
 import { ClearCartDialog } from "./ClearCartDialog";
 

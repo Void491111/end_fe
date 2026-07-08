@@ -13,8 +13,7 @@ interface MenuCardProps {
 
 export function MenuCard({ item, onSelect }: MenuCardProps) {
   const cartItems = useCartStore((s) => s.items);
-  
-  // Hitung total quantity dari menu ini di keranjang (gabungan semua varian kustomisasi)
+
   const quantity = cartItems
     .filter((i) => i.id === item.id)
     .reduce((sum, current) => sum + current.quantity, 0);
@@ -28,8 +27,16 @@ export function MenuCard({ item, onSelect }: MenuCardProps) {
       className="group cursor-pointer overflow-hidden rounded-md bg-white dark:bg-[#131519] border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-sm"
     >
       {/* Image area */}
-      <div className="relative aspect-square overflow-hidden flex items-center justify-center">
-        <span className="text-5xl opacity-90">☕</span>
+      <div className="relative aspect-square overflow-hidden flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-5xl opacity-60">☕</span>
+        )}
 
         {quantity > 0 && (
           <div className="absolute bottom-2 right-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">
