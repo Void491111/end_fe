@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMenu } from "@/hooks/useMenu";
 import { MenuCard } from "./MenuCard";
+import { RecommendationsSection } from "./RecommendationsSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShoppingBag, Loader2 } from "lucide-react";
 import { CustomizationModal } from "./CustomizationModal";
@@ -45,6 +46,9 @@ export function MenuGrid() {
   return (
     <>
       <ScrollArea className="flex-1">
+        {/* Section rekomendasi — cuma muncul kalau activeCategory=all & search kosong */}
+        <RecommendationsSection />
+
         <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {items.map((item) => (
             <MenuCard

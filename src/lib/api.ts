@@ -10,7 +10,6 @@ export const api = axios.create({
   },
 });
 
-// Inject token ke setiap request kalo ada di localStorage
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('auth_token');
@@ -21,7 +20,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401: token expired/invalid → clear & redirect ke login
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
@@ -35,7 +33,6 @@ api.interceptors.response.use(
   }
 );
 
-// Type-safe helpers
 export const authApi = {
   login: (email: string, password: string) =>
     api.post('/login', { email, password }),
@@ -48,6 +45,8 @@ export const menuApi = {
     api.get('/menus', { params }),
   toggleAvailability: (id: number) =>
     api.patch(`/menus/${id}/availability`),
+  recommendations: (params?: { limit?: number; exclude?: string }) =>
+    api.get('/menus/recommendations', { params }),
 };
 
 export const categoryApi = {

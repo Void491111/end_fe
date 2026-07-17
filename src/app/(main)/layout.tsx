@@ -1,6 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { PageTransition } from "@/components/shared/PageTransition";
-import { AuthGuard } from "@/components/auth/authGuard";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export default function MainLayout({
   children,
