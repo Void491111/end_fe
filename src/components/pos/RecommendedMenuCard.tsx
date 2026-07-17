@@ -25,7 +25,7 @@ export function RecommendedMenuCard({ item, onSelect }: RecommendedMenuCardProps
       transition={{ duration: 0.15 }}
       onClick={() => onSelect(item)}
       className="group cursor-pointer overflow-hidden rounded-md
-                 bg-gradient-to-br from-amber-50 to-orange-100
+                 bg-linear-to-br from-amber-50 to-orange-100
                  dark:from-amber-950/40 dark:to-orange-950/50
                  border-2 border-amber-400/70 dark:border-amber-500/50
                  shadow-md shadow-amber-200/60 dark:shadow-amber-500/10
@@ -43,7 +43,7 @@ export function RecommendedMenuCard({ item, onSelect }: RecommendedMenuCardProps
               className="w-full h-full object-cover"
             />
             {/* Gradient overlay tipis biar badge kontras di atas image */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-b from-black/25 via-transparent to-transparent pointer-events-none" />
           </>
         ) : (
           <span className="text-5xl opacity-70">🔥</span>
@@ -51,7 +51,7 @@ export function RecommendedMenuCard({ item, onSelect }: RecommendedMenuCardProps
 
         {/* Best Seller badge — TOP LEFT, always visible, z-10 */}
         <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-md
-                        bg-gradient-to-r from-amber-500 to-orange-500
+                        bg-linear-to-r from-amber-500 to-orange-500
                         px-2 py-1 text-[10px] font-bold text-white
                         shadow-md ring-1 ring-amber-600/30">
           <Flame className="h-3 w-3" />
