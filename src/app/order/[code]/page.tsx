@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import { notFound } from "next/navigation";
 import { Loader2, Coffee } from "lucide-react";
 import { useCustomerData } from "@/hooks/useCustomerData";
 import { CustomerCategoryTabs } from "@/components/customer/CustomerCategoryTabs";
 import { CustomerMenuCard } from "@/components/customer/CustomerMenuCard";
+import { CustomerCartBar } from "@/components/customer/CustomerCartBar";
+import { CustomerCartDrawer } from "@/components/customer/CustomerCartDrawer";
+import { useCustomerCartStore } from "@/store/useCustomerCartStore";
 
 export default function CustomerOrderPage({
   params,
@@ -15,6 +18,13 @@ export default function CustomerOrderPage({
   const { code } = use(params);
   const { table, menus, categories, isLoading, tableInvalid } = useCustomerData(code);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [cartOpen, setCartOpen] = useState(false);
+  const setTableCode = useCustomerCartStore((s) => s.setTableCode);
+
+  // Sync table code ke cart store — auto-reset cart kalau scan QR meja lain
+  useEffect(() => {
+    if (code) setTableCode(code);
+  }, [code, setTableCode]);
 
   if (tableInvalid) notFound();
 
@@ -65,7 +75,7 @@ export default function CustomerOrderPage({
       />
 
       {/* Menu grid */}
-      <section className="px-4 py-3 pb-24">
+      <section className="px-4 py-3 pb-28">
         {filteredMenus.length === 0 ? (
           <div className="text-center py-12 text-sm text-muted-foreground">
             Tidak ada menu di kategori ini
@@ -78,6 +88,16 @@ export default function CustomerOrderPage({
           </div>
         )}
       </section>
+
+      {/* Floating cart bar — muncul kalau cart isi */}
+      <CustomerCartBar onOpen={() => setCartOpen(true)} />
+
+      {/* Bottom sheet cart drawer */}
+      <CustomerCartDrawer
+        open={cartOpen}
+        onOpenChange={setCartOpen}
+        tableCode={code}
+      />
     </>
   );
-} 
+}
