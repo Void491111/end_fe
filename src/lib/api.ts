@@ -75,3 +75,12 @@ export const publicMenuApi = {
   recommendations: (params?: { limit?: number; exclude?: string }) =>
     publicApi.get('/public/recommendations', { params }),
 };
+
+export const publicOrderApi = {
+  create: (data: {
+    table_code: string;
+    customer_name: string;
+    items: { menu_id: number; quantity: number; notes?: string }[];
+  }) => publicApi.post('/public/orders', data),
+  status: (orderId: number) => publicApi.get(`/public/orders/${orderId}/status`),
+};
