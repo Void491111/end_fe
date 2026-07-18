@@ -30,7 +30,7 @@ export function MenuCard({ item, onSelect }: MenuCardProps) {
       <div className="relative aspect-square overflow-hidden flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         {item.image ? (
           <img
-            src={item.image}
+            src={item.imageUrl}
             alt={item.name}
             className="w-full h-full object-cover"
           />
