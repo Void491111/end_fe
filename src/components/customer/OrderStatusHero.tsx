@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { STATUS_CONFIG, isTerminalStatus } from "@/lib/customerStatus";
+import { STATUS_CONFIG, isTerminalStatus } from "@/lib/customerStatus"; 
 import type { OrderStatusValue } from "@/hooks/useOrderStatus";
 
 interface Props {
