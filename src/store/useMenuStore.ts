@@ -17,7 +17,8 @@ const mapMenu = (raw: any): MenuItem => ({
   description: raw.description ?? "",
   price: parseFloat(raw.price),
   categoryId: raw.category?.slug ?? String(raw.category_id),
-  imageUrl: raw.image ?? "",
+  image: raw.image ?? null,
+  imageUrl: raw.imageUrl ?? "",
   isAvailable: !!raw.is_available,
 });
 
