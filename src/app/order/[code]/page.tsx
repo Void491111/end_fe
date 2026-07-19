@@ -8,6 +8,7 @@ import { CustomerCategoryTabs } from "@/components/customer/CustomerCategoryTabs
 import { CustomerMenuCard } from "@/components/customer/CustomerMenuCard";
 import { CustomerCartBar } from "@/components/customer/CustomerCartBar";
 import { CustomerCartDrawer } from "@/components/customer/CustomerCartDrawer";
+import { CustomerRecommendations } from "@/components/customer/CustomerRecommendations";
 import { useCustomerCartStore } from "@/store/useCustomerCartStore";
 
 export default function CustomerOrderPage({
@@ -21,7 +22,6 @@ export default function CustomerOrderPage({
   const [cartOpen, setCartOpen] = useState(false);
   const setTableCode = useCustomerCartStore((s) => s.setTableCode);
 
-  // Sync table code ke cart store — auto-reset cart kalau scan QR meja lain
   useEffect(() => {
     if (code) setTableCode(code);
   }, [code, setTableCode]);
@@ -42,7 +42,6 @@ export default function CustomerOrderPage({
 
   return (
     <>
-      {/* Header — fixed top */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
@@ -57,7 +56,6 @@ export default function CustomerOrderPage({
         </div>
       </header>
 
-      {/* Welcome banner */}
       <section className="px-4 pt-4 pb-2">
         <div className="rounded-lg bg-linear-to-br from-primary/10 to-primary/5 p-4 border border-primary/20">
           <h2 className="text-base font-bold">Selamat datang! 👋</h2>
@@ -67,14 +65,15 @@ export default function CustomerOrderPage({
         </div>
       </section>
 
-      {/* Category tabs — sticky di bawah header */}
+      {/* Rekomendasi best-seller — hide otomatis kalo kosong */}
+      <CustomerRecommendations />
+
       <CustomerCategoryTabs
         categories={categories}
         active={activeCategory}
         onChange={setActiveCategory}
       />
 
-      {/* Menu grid */}
       <section className="px-4 py-3 pb-28">
         {filteredMenus.length === 0 ? (
           <div className="text-center py-12 text-sm text-muted-foreground">
@@ -89,10 +88,7 @@ export default function CustomerOrderPage({
         )}
       </section>
 
-      {/* Floating cart bar — muncul kalau cart isi */}
       <CustomerCartBar onOpen={() => setCartOpen(true)} />
-
-      {/* Bottom sheet cart drawer */}
       <CustomerCartDrawer
         open={cartOpen}
         onOpenChange={setCartOpen}
