@@ -33,7 +33,6 @@ export const publicApi = axios.create({
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 });
 
-// ==================== AUTH APIs ====================
 export const authApi = {
   login: (email: string, password: string) => api.post('/login', { email, password }),
   logout: () => api.post('/logout'),
@@ -64,7 +63,7 @@ export const orderApi = {
 
 export const dashboardApi = { weeklyRevenue: () => api.get('/dashboard/weekly-revenue') };
 
-// ==================== PUBLIC APIs (customer QR flow) ====================
+// PUBLIC APIs (customer QR flow)
 export const publicTableApi = {
   validate: (code: string) => publicApi.get(`/public/tables/${code}`),
 };
@@ -83,4 +82,6 @@ export const publicOrderApi = {
     items: { menu_id: number; quantity: number; notes?: string }[];
   }) => publicApi.post('/public/orders', data),
   status: (orderId: number) => publicApi.get(`/public/orders/${orderId}/status`),
+  simulatePayment: (orderId: number) =>
+    publicApi.post(`/public/orders/${orderId}/simulate-payment`),
 };

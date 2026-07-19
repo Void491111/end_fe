@@ -11,6 +11,7 @@ import { OrderStatusHero } from "@/components/customer/OrderStatusHero";
 import { OrderQueueDisplay } from "@/components/customer/OrderQueueDisplay";
 import { OrderItemsList } from "@/components/customer/OrderItemsList";
 import { OrderMetaInfo } from "@/components/customer/OrderMetaInfo";
+import { PaymentSimulator } from "@/components/customer/PaymentSimulator";
 
 export default function OrderStatusPage({
   params,
@@ -34,6 +35,7 @@ export default function OrderStatusPage({
   }
 
   const terminal = isTerminalStatus(order.status);
+  const needsPayment = order.status === "pending_payment";
 
   return (
     <>
@@ -53,6 +55,12 @@ export default function OrderStatusPage({
 
       <main className="px-4 py-4 pb-24 space-y-4">
         <OrderStatusHero status={order.status} />
+
+        {/* Payment simulator — cuma muncul saat pending_payment */}
+        {needsPayment && (
+          <PaymentSimulator orderId={order.id} total={Number(order.total)} />
+        )}
+
         <OrderQueueDisplay queueNumber={order.queue_number} customerName={order.customer_name} />
         <OrderItemsList items={order.items} total={order.total} />
         <OrderMetaInfo
