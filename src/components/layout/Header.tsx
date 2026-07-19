@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, History, ChevronDown, Package } from "lucide-react";
+import { Search, LayoutGrid, ChevronDown, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
@@ -42,20 +42,15 @@ export function Header() {
               variant="outline"
               className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
             >
-              {isPos ? (
-                <>
-                  <LayoutGrid className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">POS</span>
-                </>
-              ) : isInventory ? (
+              {isInventory ? (
                 <>
                   <Package className="h-4 w-4 text-primary" />
                   <span className="text-sm font-semibold text-primary">Inventory</span>
                 </>
               ) : (
                 <>
-                  <History className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">Orders</span>
+                  <LayoutGrid className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-semibold text-primary">POS</span>
                 </>
               )}
               <ChevronDown className="h-4 w-4 text-muted-foreground ml-1" />
@@ -67,13 +62,6 @@ export function Header() {
               <Link href="/pos" className="w-full cursor-pointer flex items-center gap-2">
                 <LayoutGrid className="h-4 w-4" />
                 <span>POS</span>
-              </Link>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem asChild>
-              <Link href="/orders" className="w-full cursor-pointer flex items-center gap-2">
-                <History className="h-4 w-4" />
-                <span>Orders</span>
               </Link>
             </DropdownMenuItem>
 
