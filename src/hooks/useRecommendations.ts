@@ -34,7 +34,7 @@ export function useRecommendations(limit: number = 4) {
           description: raw.description ?? "",
           price: parseFloat(raw.price),
           image: raw.image ?? null,
-          imageUrl: raw.image ?? "",
+          imageUrl: raw.imageUrl ?? "",
           categoryId: raw.category?.slug ?? String(raw.category_id),
           isAvailable: true,
           totalSold: Number(raw.total_sold) || 0,
