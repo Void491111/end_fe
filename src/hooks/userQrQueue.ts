@@ -18,7 +18,7 @@ export function useQrQueue(pollMs = 8000) {
   const [orders, setOrders] = useState<QueueOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<number | null>(null);
-  const timer = useRef<ReturnType<typeof setInterval>>();
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -32,7 +32,9 @@ export function useQrQueue(pollMs = 8000) {
   useEffect(() => {
     load();
     timer.current = setInterval(load, pollMs);
-    return () => clearInterval(timer.current);
+    return () => {
+        if (timer.current) clearInterval(timer.current);
+    }
   }, [load, pollMs]);
 
   const act = useCallback(
