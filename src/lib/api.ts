@@ -85,3 +85,11 @@ export const publicOrderApi = {
   simulatePayment: (orderId: number) =>
     publicApi.post(`/public/orders/${orderId}/simulate-payment`),
 };
+
+export const queueApi = {
+  list:    () => api.get("/orders/queue"),
+  count:   () => api.get("/orders/queue/count"),
+  confirm: (id: number) => api.patch(`/orders/${id}/confirm`),
+  complete:(id: number) => api.patch(`/orders/${id}/complete`),
+  reject:  (id: number, reason: string) => api.patch(`/orders/${id}/reject`, { reason }),
+}
