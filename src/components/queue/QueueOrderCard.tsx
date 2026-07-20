@@ -1,7 +1,7 @@
 "use client";
 import { Check, CheckCheck, X, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { QueueOrder } from "@/hooks/userQrQueue";
+import type { QueueOrder } from "@/hooks/useQrQueue";
 
 interface Props {
   order: QueueOrder;
