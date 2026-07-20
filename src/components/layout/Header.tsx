@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { usePOSStore } from "@/store/usePOSStore";
 import { APP_NAME } from "@/lib/constants";
+import { QrQueueBadge } from "@/components/queue/QrQueueBadge";
 
 import {
   DropdownMenu,
@@ -92,6 +93,7 @@ export function Header() {
       <div className="flex items-center gap-2 ml-auto">
         <ThemeToggle />
         <UserMenu />
+        <QrQueueBadge />
       </div>
     </header>
   );

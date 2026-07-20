@@ -33,8 +33,8 @@ export function useQrQueue(pollMs = 8000) {
     load();
     timer.current = setInterval(load, pollMs);
     return () => {
-        if (timer.current) clearInterval(timer.current);
-    }
+      if (timer.current) clearInterval(timer.current);
+    };
   }, [load, pollMs]);
 
   const act = useCallback(
