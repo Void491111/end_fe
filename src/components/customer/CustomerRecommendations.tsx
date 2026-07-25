@@ -34,6 +34,10 @@ export function CustomerRecommendations() {
 
 function RecommendationCard({ item }: { item: RecommendedItem }) {
   const addItem = useCustomerCartStore((s) => s.addItem);
+  // Baca qty langsung dari items biar reaktif (cartItemId = `${item.id}`).
+  const quantity = useCustomerCartStore(
+    (s) => s.items.find((i) => i.cartItemId === item.id)?.quantity ?? 0
+  );
 
   return (
     <motion.div
@@ -54,9 +58,16 @@ function RecommendationCard({ item }: { item: RecommendedItem }) {
         ) : (
           <span className="text-3xl opacity-60">☕</span>
         )}
-        <div className="absolute bottom-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
-          <Plus className="h-3.5 w-3.5" strokeWidth={3} />
-        </div>
+        {/* Qty badge kalo udah di cart, kalo belum tampil tombol plus */}
+        {quantity > 0 ? (
+          <div className="absolute bottom-1.5 right-1.5 flex h-7 min-w-7 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground shadow-lg">
+            {quantity}
+          </div>
+        ) : (
+          <div className="absolute bottom-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+            <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+          </div>
+        )}
       </div>
 
       {/* Info */}
