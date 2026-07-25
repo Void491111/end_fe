@@ -1,25 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { menuApi } from "@/lib/api";
-import { useCartStore } from "@/store/useCartStore";
 import { MenuItem } from "@/types/menu";
 
 interface RecommendedItem extends MenuItem {
   totalSold: number;
 }
 
+// Best-seller showcase. SENGAJA gak exclude item yang udah di cart —
+// exclude-on-add bikin list bermutasi tiap tambah item (flicker/kedip).
+// Card-nya sendiri yang nampilin badge qty, jadi list-nya diem total.
 export function useRecommendations(limit: number = 4) {
-  const cartItems = useCartStore((s) => s.items);
-  const [allItems, setAllItems] = useState<RecommendedItem[]>([]);
+  const [items, setItems] = useState<RecommendedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchRecommendations = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const { data } = await menuApi.recommendations({ limit: limit + 5 });
+        const { data } = await menuApi.recommendations({ limit });
 
         const mapped: RecommendedItem[] = (data.data || []).map((raw: any) => ({
           id: String(raw.id),
@@ -33,7 +35,7 @@ export function useRecommendations(limit: number = 4) {
           totalSold: Number(raw.total_sold) || 0,
         }));
 
-        setAllItems(mapped);
+        setItems(mapped);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Gagal load rekomendasi");
       } finally {
@@ -43,11 +45,6 @@ export function useRecommendations(limit: number = 4) {
 
     fetchRecommendations();
   }, [limit]);
-
-  const items = useMemo(() => {
-    const cartIds = new Set(cartItems.map((i) => i.id));
-    return allItems.filter((i) => !cartIds.has(i.id)).slice(0, limit);
-  }, [allItems, cartItems, limit]);
 
   return { items, isLoading, error };
 }
