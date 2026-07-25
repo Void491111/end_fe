@@ -1,29 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { publicMenuApi } from "@/lib/api";
-import { useCustomerCartStore } from "@/store/useCustomerCartStore";
 import { MenuItem } from "@/types/menu";
 
 export interface RecommendedItem extends MenuItem {
   totalSold: number;
 }
 
-// Rekomendasi based on best-sellers (order_items dari orders completed).
-// Exclude item yg udah di cart dilakukan CLIENT-SIDE biar section-nya
-// gak ilang-timbul tiap nambah item (dulu refetch + toggle isLoading = flicker).
+// Best-seller showcase. SENGAJA gak exclude item yang udah di cart —
+// exclude-on-add bikin list bermutasi tiap tap item (kedip di HP).
+// Card-nya nampilin badge qty sendiri, jadi list-nya diem total.
 export function useCustomerRecommendations(limit: number = 4) {
-  const cartItems = useCustomerCartStore((s) => s.items);
-  const [allItems, setAllItems] = useState<RecommendedItem[]>([]);
+  const [items, setItems] = useState<RecommendedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch SEKALI aja (cuma depend ke limit). Ambil lebih biar ada backfill
-  // setelah item ke-exclude.
   useEffect(() => {
     const run = async () => {
       setIsLoading(true);
       try {
-        const { data } = await publicMenuApi.recommendations({ limit: limit + 5 });
+        const { data } = await publicMenuApi.recommendations({ limit });
 
         const mapped: RecommendedItem[] = (data.data || []).map((raw: any) => ({
           id: String(raw.id),
@@ -37,9 +33,9 @@ export function useCustomerRecommendations(limit: number = 4) {
           totalSold: Number(raw.total_sold) || 0,
         }));
 
-        setAllItems(mapped);
+        setItems(mapped);
       } catch {
-        setAllItems([]); // Silent fail — kalo error, hide section aja
+        setItems([]); // Silent fail — kalo error, hide section aja
       } finally {
         setIsLoading(false);
       }
@@ -47,12 +43,6 @@ export function useCustomerRecommendations(limit: number = 4) {
 
     run();
   }, [limit]);
-
-  // Exclude cart item instan, tanpa network, tanpa nyentuh isLoading.
-  const items = useMemo(() => {
-    const cartIds = new Set(cartItems.map((i) => i.id));
-    return allItems.filter((i) => !cartIds.has(i.id)).slice(0, limit);
-  }, [allItems, cartItems, limit]);
 
   return { items, isLoading };
 }
