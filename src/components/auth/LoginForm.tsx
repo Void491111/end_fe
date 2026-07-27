@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useSplashStore } from "@/store/useSplashStore";
 
 export function LoginForm() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export function LoginForm() {
       await login(email, password);
       const user = useAuthStore.getState().user;
       toast.success(`Selamat datang, ${user?.name}!`);
+      useSplashStore.getState().triggerCashierSplash();
       router.push("/pos");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login gagal";
