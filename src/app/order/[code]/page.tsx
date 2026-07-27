@@ -10,6 +10,8 @@ import { CustomerCartBar } from "@/components/customer/CustomerCartBar";
 import { CustomerCartDrawer } from "@/components/customer/CustomerCartDrawer";
 import { CustomerRecommendations } from "@/components/customer/CustomerRecommendations";
 import { useCustomerCartStore } from "@/store/useCustomerCartStore";
+import { AnimatePresence } from "framer-motion";
+import { CustomerSplash } from "@/components/splash/CustomerSplash";
 
 export default function CustomerOrderPage({
   params,
@@ -21,6 +23,7 @@ export default function CustomerOrderPage({
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [cartOpen, setCartOpen] = useState(false);
   const setTableCode = useCustomerCartStore((s) => s.setTableCode);
+  const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
     if (code) setTableCode(code);
@@ -42,6 +45,11 @@ export default function CustomerOrderPage({
 
   return (
     <>
+    <AnimatePresence>
+      {!splashDone && (
+        <CustomerSplash tableName={table?.name} onDone={() => setSplashDone(true)} />
+      )}
+    </AnimatePresence>
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
