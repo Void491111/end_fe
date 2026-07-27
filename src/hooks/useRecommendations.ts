@@ -8,9 +8,6 @@ interface RecommendedItem extends MenuItem {
   totalSold: number;
 }
 
-// Best-seller showcase. SENGAJA gak exclude item yang udah di cart —
-// exclude-on-add bikin list bermutasi tiap tambah item (flicker/kedip).
-// Card-nya sendiri yang nampilin badge qty, jadi list-nya diem total.
 export function useRecommendations(limit: number = 4) {
   const [items, setItems] = useState<RecommendedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
