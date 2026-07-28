@@ -63,7 +63,7 @@ export function CartPanel() {
               <div className="space-y-2">
                 <AnimatePresence mode="popLayout">
                   {displayItems.map((item) => (
-                    <CartItemRow key={item.id} item={item} />
+                    <CartItemRow key={item.cartItemId} item={item} />
                   ))}
                 </AnimatePresence>
               </div>
