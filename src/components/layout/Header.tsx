@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, LayoutGrid, ChevronDown, Package } from "lucide-react";
+import {
+  Search,
+  LayoutGrid,
+  ChevronDown,
+  Package,
+  ListOrdered,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UserMenu } from "@/components/layout/UserMenu";
@@ -24,6 +30,13 @@ export function Header() {
 
   const isPos = pathname === "/pos";
   const isInventory = pathname === "/inventory";
+  const isQueue = pathname === "/antrian";
+
+  const activeLabel = isInventory
+    ? { icon: Package, text: "Inventory" }
+    : isQueue
+      ? { icon: ListOrdered, text: "Antrian" }
+      : { icon: LayoutGrid, text: "POS" };
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-6">
@@ -42,17 +55,10 @@ export function Header() {
               variant="outline"
               className="gap-2 bg-secondary/50 border-0 h-9 px-3 hover:bg-secondary/80 transition-colors"
             >
-              {isInventory ? (
-                <>
-                  <Package className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">Inventory</span>
-                </>
-              ) : (
-                <>
-                  <LayoutGrid className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold text-primary">POS</span>
-                </>
-              )}
+              <activeLabel.icon className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold text-primary">
+                {activeLabel.text}
+              </span>
               <ChevronDown className="h-4 w-4 text-muted-foreground ml-1" />
             </Button>
           </DropdownMenuTrigger>
@@ -62,6 +68,13 @@ export function Header() {
               <Link href="/pos" className="w-full cursor-pointer flex items-center gap-2">
                 <LayoutGrid className="h-4 w-4" />
                 <span>POS</span>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem asChild>
+              <Link href="/antrian" className="w-full cursor-pointer flex items-center gap-2">
+                <ListOrdered className="h-4 w-4" />
+                <span>Antrian</span>
               </Link>
             </DropdownMenuItem>
 
