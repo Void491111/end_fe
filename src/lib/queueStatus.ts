@@ -1,30 +1,16 @@
-import { Clock, CheckCircle2, type LucideIcon } from "lucide-react";
+import { Utensils, ShoppingBag, type LucideIcon } from "lucide-react";
 
-/**
- * Status mentah dari backend queue endpoint.
- * completed masuk juga karena board nampilin pesanan selesai hari ini.
- */
-export type QueueStatus = "paid" | "preparing" | "completed";
+/** order kasir cuma 2 tipe, sesuai enum BE */
+export type OrderType = "dine_in" | "takeaway";
 
-/**
- * Bucket visual — sengaja cuma 2 sesuai spec kasir:
- *  - "active" (biru): belum kelar. paid & preparing digabung, kasir gak
- *    perlu bedain "udah dibayar" vs "lagi diracik" di board ini.
- *  - "done" (hijau): udah selesai.
- */
-export type QueueBucket = "active" | "done";
-
-export const bucketOf = (status: QueueStatus): QueueBucket =>
-  status === "completed" ? "done" : "active";
-
-export interface QueueVisual {
+export interface TypeVisual {
   /** teks di badge */
   label: string;
   /** badge = warna kontras solid */
   badge: string;
   /** container utama = versi lite dari warna badge */
   container: string;
-  /** container saat di-hover (sedikit lebih pekat) */
+  /** container saat di-hover */
   containerHover: string;
   /** aksen teks/ikon */
   accent: string;
@@ -32,33 +18,33 @@ export interface QueueVisual {
 }
 
 /**
- * Nurut palette yang udah dipakai di STATUS_CONFIG (customer side) biar
- * konsisten satu app. Tambah warna? cukup tambah entry di sini —
- * card & dialog otomatis ngikut, gak perlu sentuh komponen.
+ * Warna container ngikut warna badge, versi lite.
+ * Tambah tipe order baru? cukup tambah entry di sini —
+ * card otomatis ngikut, gak perlu sentuh komponen.
  */
-export const QUEUE_VISUAL: Record<QueueBucket, QueueVisual> = {
-  active: {
-    label: "Belum Selesai",
+export const TYPE_VISUAL: Record<OrderType, TypeVisual> = {
+  dine_in: {
+    label: "Dine In",
     badge: "bg-blue-600 text-white",
     container:
       "bg-blue-50 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900",
     containerHover: "hover:bg-blue-100/70 dark:hover:bg-blue-950/50",
     accent: "text-blue-600 dark:text-blue-400",
-    icon: Clock,
+    icon: Utensils,
   },
-  done: {
-    label: "Selesai",
+  takeaway: {
+    label: "Takeaway",
     badge: "bg-green-600 text-white",
     container:
       "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900",
     containerHover: "hover:bg-green-100/70 dark:hover:bg-green-950/50",
     accent: "text-green-600 dark:text-green-400",
-    icon: CheckCircle2,
+    icon: ShoppingBag,
   },
 };
 
-export const visualOf = (status: QueueStatus): QueueVisual =>
-  QUEUE_VISUAL[bucketOf(status)];
+export const visualOf = (type: string): TypeVisual =>
+  TYPE_VISUAL[type === "takeaway" ? "takeaway" : "dine_in"];
 
 /** format ISO string ke jam:menit lokal (id-ID) */
 export const fmtTime = (iso: string | null): string =>
@@ -69,41 +55,23 @@ export const fmtTime = (iso: string | null): string =>
       }).format(new Date(iso))
     : "-";
 
+export const rupiah = (n: number): string =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(n);
+
 /**
- * Catatan customer disimpan BE sebagai satu string gabungan:
- *   "Cappuccino: less sugar | Latte: extra ice"
- * Dipecah balik jadi per-menu biar bisa nempel di baris item masing-masing.
- * Potongan yang gak ketemu menu-nya masuk ke `general` (jangan dibuang —
- * itu tetep instruksi customer).
+ * BE nyimpen kustomisasi sebagai satu string gabungan:
+ *   "Latte x1: No Ice, Less Sugar | Kopi Susu x2: extra shot"
+ * Dipecah balik jadi array baris. Sengaja gak dicocokin per nama menu —
+ * dua baris menu sama (kustomisasi beda) bakal tabrakan kalau di-match nama.
  */
-export interface ParsedNotes {
-  byMenu: Record<string, string>;
-  general: string[];
-}
-
-export const parseItemNotes = (notes: string | null): ParsedNotes => {
-  const out: ParsedNotes = { byMenu: {}, general: [] };
-  if (!notes) return out;
-
-  for (const chunk of notes.split("|")) {
-    const part = chunk.trim();
-    if (!part) continue;
-
-    const sep = part.indexOf(":");
-    if (sep === -1) {
-      out.general.push(part);
-      continue;
-    }
-    const menu = part.slice(0, sep).trim();
-    const note = part.slice(sep + 1).trim();
-    if (menu && note) out.byMenu[menu] = note;
-    else out.general.push(part);
-  }
-  return out;
-};
-
-/** ada catatan apa pun? dipakai buat nandain card "perlu diperhatiin" */
-export const hasNotes = (notes: string | null): boolean => {
-  const p = parseItemNotes(notes);
-  return Object.keys(p.byMenu).length > 0 || p.general.length > 0;
-};
+export const parseCustom = (custom: string | null): string[] =>
+  custom
+    ? custom
+        .split("|")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];

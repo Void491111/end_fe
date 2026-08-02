@@ -1,5 +1,5 @@
-import { QueueBoard } from "@/components/queue/QueueBoard";
+import { CashierOrderSlider } from "@/components/queue/CashierOrderSlider";
 
 export default function AntrianPage() {
-  return <QueueBoard />;
+  return <CashierOrderSlider />;
 }

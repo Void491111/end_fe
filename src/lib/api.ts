@@ -52,8 +52,17 @@ export const categoryApi = { list: () => api.get('/categories') };
 export const orderApi = {
   create: (data: {
     order_type: 'dine_in' | 'takeaway';
-    items: { menu_id: number; quantity: number }[];
+    items: {
+      menu_id: number;
+      quantity: number;
+      ice_level?: string;
+      sugar_level?: string;
+      notes?: string;
+    }[];
   }) => api.post('/orders', data),
+
+  cashierRecent: (limit = 20) =>
+    api.get('/orders/cashier-recent', { params: { limit } }),
   list: (params?: { period?: string; status?: string; search?: string; page?: number }) =>
     api.get('/orders', { params }),
   detail: (id: number) => api.get(`/orders/${id}`),
