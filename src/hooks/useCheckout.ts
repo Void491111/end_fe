@@ -52,15 +52,14 @@ export function useCheckout() {
 
     try {
       // Merge duplicate menu_ids (kalo ada same menu dgn customization beda, jumlahin quantity-nya)
-      const itemMap = new Map<number, number>();
-      items.forEach((item) => {
-        const menuId = parseInt(item.id);
-        itemMap.set(menuId, (itemMap.get(menuId) ?? 0) + item.quantity);
-      });
-
-      const apiItems = Array.from(itemMap.entries()).map(([menu_id, quantity]) => ({
-        menu_id,
-        quantity,
+      // Jangan digabung per menu_id — kustomisasi tiap baris harus utuh
+      // sampai BE. Dua Latte dgn ice level beda = dua baris terpisah.
+      const apiItems = items.map((item) => ({
+        menu_id: parseInt(item.id),
+        quantity: item.quantity,
+        ice_level: item.iceLevel,
+        sugar_level: item.sugarLevel,
+        notes: item.notes || undefined,
       }));
 
       // FE pake "dine-in", BE expect "dine_in"

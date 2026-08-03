@@ -22,7 +22,7 @@ export function CashierOrderSlider() {
         <div>
           <h2 className="text-xl font-bold tracking-tight">Pesanan Hari Ini</h2>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            {orders.length} pesanan kasir &middot; geser untuk lihat yang lain
+           {`${orders.length} pesanan kasir · geser untuk lihat yang lain`}
           </p>
         </div>
 
