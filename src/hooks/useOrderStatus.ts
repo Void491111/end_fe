@@ -38,7 +38,7 @@ export interface OrderStatusData {
   paid_at: string | null;
 }
 
-// State terminal — polling berhenti kalau nyampe sini
+// State terminal — end point
 const TERMINAL_STATES: OrderStatusValue[] = ["completed", "voided", "expired"];
 
 const POLL_INTERVAL = 5000; // 5 detik
