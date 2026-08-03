@@ -12,14 +12,13 @@ export interface CashierOrder {
   order_type: string;
   total: number;
   created_at: string;
-  /** string kustomisasi gabungan dari BE, null kalau semua default */
   custom: string | null;
   items: CashierOrderItem[];
 }
 
 /**
  * Order kasir hari ini, terbaru duluan.
- * Polling ringan biar kalau ada 2 device kasir tetep kesinkron.
+ * anspsi device lebih dri 1
  */
 export function useCashierOrders(pollMs = 15000) {
   const [orders, setOrders] = useState<CashierOrder[]>([]);
