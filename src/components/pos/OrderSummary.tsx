@@ -11,8 +11,6 @@ export function OrderSummary() {
   const subtotal = useCartStore((s) => s.getSubtotal());
   const tax = useCartStore((s) => s.getTax());
   const total = useCartStore((s) => s.getTotal());
-
-  // Render 0 saat SSR, baru render nilai asli setelah client hydrate
   const displaySubtotal = hydrated ? subtotal : 0;
   const displayTax = hydrated ? tax : 0;
   const displayTotal = hydrated ? total : 0;
